@@ -76,4 +76,12 @@ class ContentLoaderTest < ActiveSupport::TestCase
     assert_equal 2, part0.chapters.size
     assert_equal ["0.1", "0.2", "0.3"], part0.exercises.map(&:key)
   end
+
+  test "part 1 is written with 2 chapters and 4 exercises" do
+    part1 = ContentLoader.parts.find { |p| p.number == 1 }
+
+    assert_equal "written", part1.status
+    assert_equal 2, part1.chapters.size
+    assert_equal ["1.1", "1.2", "1.3", "1.4"], part1.exercises.map(&:key)
+  end
 end
