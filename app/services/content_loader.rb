@@ -4,13 +4,32 @@ require "kramdown"
 class ContentLoader
   class InvalidContentError < StandardError; end
 
+  VALID_STATUSES = %w[written coming_soon].freeze
+
+  def self.parts
+    if Rails.env.production?
+      Rails.cache.fetch("content_loader/parts/#{content_version}") { new(root: default_root).parts }
+    else
+      new(root: default_root).parts
+    end
+  end
+
+  def self.default_root
+    Rails.root.join("content", "parts")
+  end
+
+  def self.content_version
+    Dir.glob(default_root.join("**/*")).map { |f| File.mtime(f).to_i }.max
+  end
+
   def initialize(root:)
     @root = root
   end
 
   def parts
-    Dir.children(@root).sort.map { |dirname| parse_part(@root.join(dirname)) }
-              .sort_by(&:number)
+    parsed = Dir.children(@root).sort.map { |dirname| parse_part(@root.join(dirname)) }
+    validate!(parsed)
+    parsed.sort_by(&:number)
   end
 
   private
@@ -56,5 +75,24 @@ class ContentLoader
 
   def render_markdown(body)
     Kramdown::Document.new(body, input: "GFM", syntax_highlighter: "rouge").to_html
+  end
+
+  def validate!(parts)
+    parts.each do |part|
+      unless VALID_STATUSES.include?(part.status)
+        raise InvalidContentError, "part #{part.slug} has invalid status #{part.status.inspect}"
+      end
+    end
+
+    numbers = parts.map(&:number)
+    if numbers.uniq.length != numbers.length
+      raise InvalidContentError, "duplicate part numbers: #{numbers}"
+    end
+
+    keys = parts.flat_map(&:exercises).map(&:key)
+    if keys.uniq.length != keys.length
+      duplicates = keys.tally.select { |_, count| count > 1 }.keys
+      raise InvalidContentError, "duplicate exercise keys: #{duplicates}"
+    end
   end
 end
