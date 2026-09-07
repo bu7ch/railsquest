@@ -1,0 +1,13 @@
+<h1>RailsQuest</h1>
+<p>Un cours Rails, inspiré de Full Stack Open, avec un fil rouge : un CRM de dons pour association.</p>
+
+<ol>
+  <% @parts.each do |part| %>
+    <li>
+      <%= link_to "Partie #{part.number} — #{part.title}", part_path(part.slug) %>
+      <% unless part.written? %>
+        <span>(à venir)</span>
+      <% end %>
+    </li>
+  <% end %>
+</ol>

@@ -1,0 +1,16 @@
+<h1>Partie <%= @part.number %> — <%= @part.title %></h1>
+
+<% if @part.written? %>
+  <ul>
+    <% @part.chapters.each do |chapter| %>
+      <li>
+        <%= link_to chapter.title, part_chapter_path(@part.slug, chapter.slug) %>
+        (<%= chapter.exercises.size %> exercice<%= "s" if chapter.exercises.size != 1 %>)
+      </li>
+    <% end %>
+  </ul>
+<% else %>
+  <p>Cette partie est à venir.</p>
+<% end %>
+
+<%= link_to "Retour au sommaire", root_path %>

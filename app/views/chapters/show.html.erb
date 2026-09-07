@@ -1,0 +1,12 @@
+<h1><%= @chapter.title %></h1>
+
+<%= raw @chapter.body_html %>
+
+<h2>Exercices</h2>
+<ul>
+  <% @chapter.exercises.each do |exercise| %>
+    <li><%= exercise.key %> — <%= exercise.title %></li>
+  <% end %>
+</ul>
+
+<%= link_to "Retour à la partie", part_path(@part.slug) %>
