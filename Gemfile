@@ -43,6 +43,9 @@ gem "image_processing", "~> 1.2"
 # Render Markdown course content to HTML
 gem "kramdown"
 
+# GitHub-Flavored Markdown parser for kramdown
+gem "kramdown-parser-gfm"
+
 # Syntax highlighting for code blocks in rendered Markdown
 gem "rouge"
 
