@@ -16,7 +16,7 @@ Rails.application.routes.draw do
     resources :chapters, only: [ :show ], param: :slug
   end
 
-  get "/auth/:provider/callback", to: "sessions#create"
+  get "/auth/:provider/callback", to: "sessions#create", constraints: { provider: "github" }
   get "/auth/failure", to: "sessions#failure"
   delete "/logout", to: "sessions#destroy"
 

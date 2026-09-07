@@ -30,4 +30,25 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     # names.
     assert_select "button", "Se connecter avec GitHub"
   end
+
+  test "callback for a provider other than github does not route to create" do
+    get "/auth/notgithub/callback"
+
+    assert_response :not_found
+  end
+
+  test "create redirects to failure instead of raising when the auth hash is missing" do
+    OmniAuth.config.mock_auth[:github] = nil
+    OmniAuth.config.mock_auth[:default] = nil
+
+    get "/auth/github/callback"
+
+    assert_redirected_to root_path
+    follow_redirect!
+    assert_match "Échec de la connexion GitHub.", response.body
+  ensure
+    OmniAuth.config.mock_auth[:default] = OmniAuth::AuthHash.new(
+      "provider" => "default", "uid" => "1234", "info" => { "name" => "Example User" }
+    )
+  end
 end
