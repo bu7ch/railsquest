@@ -68,4 +68,12 @@ class ContentLoaderTest < ActiveSupport::TestCase
     assert coming_soon.all? { |p| p.status == "coming_soon" }
     assert coming_soon.all? { |p| p.chapters.empty? }
   end
+
+  test "part 0 is written with 2 chapters and 3 exercises" do
+    part0 = ContentLoader.parts.find { |p| p.number == 0 }
+
+    assert_equal "written", part0.status
+    assert_equal 2, part0.chapters.size
+    assert_equal ["0.1", "0.2", "0.3"], part0.exercises.map(&:key)
+  end
 end
