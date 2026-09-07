@@ -14,12 +14,13 @@ class ExerciseCompletionsController < ApplicationController
   private
 
   def render_exercise_state(exercise_key, completed:)
+    exercise_title = ContentLoader.parts.flat_map(&:exercises).find { |e| e.key == exercise_key }&.title
     respond_to do |format|
       format.turbo_stream do
         render turbo_stream: turbo_stream.replace(
           "exercise_#{exercise_key.parameterize}",
           partial: "chapters/exercise",
-          locals: { exercise_key: exercise_key, completed: completed }
+          locals: { exercise_key: exercise_key, exercise_title: exercise_title, completed: completed }
         )
       end
       format.html { head :ok }
