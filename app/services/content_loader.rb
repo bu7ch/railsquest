@@ -58,12 +58,21 @@ class ContentLoader
       Content::Exercise.new(key: ex.fetch("key"), title: ex.fetch("title"))
     end
 
+    title = meta.fetch("title")
+
     Content::Chapter.new(
       slug: File.basename(file_path, ".md").sub(/\A\d+-/, ""),
-      title: meta.fetch("title"),
+      title: title,
       exercises: exercises,
-      body_html: render_markdown(body)
+      body_html: render_markdown(strip_redundant_heading(body, title))
     )
+  end
+
+  # The page chrome already renders the chapter title as its <h1>; a
+  # Markdown body that repeats it as its own leading "# Title" would
+  # otherwise print the same heading twice.
+  def strip_redundant_heading(body, title)
+    body.sub(/\A\s*# #{Regexp.escape(title)}\s*\n/, "")
   end
 
   def split_front_matter(raw)
@@ -74,7 +83,7 @@ class ContentLoader
   end
 
   def render_markdown(body)
-    Kramdown::Document.new(body, input: "GFM", syntax_highlighter: "rouge").to_html
+    Kramdown::Document.new(body, input: "GFM", syntax_highlighter: "rouge", hard_wrap: false).to_html
   end
 
   def validate!(parts)

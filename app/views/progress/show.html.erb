@@ -1,18 +1,33 @@
-<h1>Votre progression</h1>
-
+<% content_for :title, "Votre progression — RailsQuest" %>
 <% total_exercises = @parts.flat_map(&:exercises) %>
 <% total_completed = total_exercises.count { |ex| @completed_keys.include?(ex.key) } %>
+<% percent = total_exercises.empty? ? 0 : (total_completed * 100.0 / total_exercises.size).round %>
 
-<p>Total : <%= total_completed %> / <%= total_exercises.size %></p>
+<div class="page">
+  <h1>Votre progression</h1>
 
-<ul>
-  <% @parts.each do |part| %>
-    <% part_completed = part.exercises.count { |ex| @completed_keys.include?(ex.key) } %>
-    <li>
-      Partie <%= part.number %> — <%= part.title %> :
-      <%= part_completed %> / <%= part.exercises.size %>
-    </li>
+  <p class="progress-total">
+    Total : <span class="progress-count"><%= total_completed %> / <%= total_exercises.size %></span>
+  </p>
+
+  <div class="progress-layout">
+    <ul class="progress-list">
+      <% @parts.each do |part| %>
+        <% part_completed = part.exercises.count { |ex| @completed_keys.include?(ex.key) } %>
+        <li>
+          <span>Partie <%= part.number %> — <%= part.title %></span>
+          <span><%= part_completed %> / <%= part.exercises.size %></span>
+        </li>
+      <% end %>
+    </ul>
+
+    <div class="progress-mark-panel">
+      <span class="progress-mark-panel__figure"><%= percent %>%</span>
+      <span class="progress-mark-panel__label">complété</span>
+    </div>
+  </div>
+
+  <%= link_to root_path, class: "back-link" do %>
+    <%= back_arrow %> Retour au sommaire
   <% end %>
-</ul>
-
-<%= link_to "Retour au sommaire", root_path %>
+</div>

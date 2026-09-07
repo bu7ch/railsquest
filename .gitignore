@@ -32,3 +32,10 @@
 
 # Ignore key files for decrypting credentials and more.
 /config/*.key
+
+# Ephemeral Impeccable review/build artifacts (design.json and surfaces/ are kept).
+/.impeccable/review/
+/.impeccable/mocks/
+/.impeccable/build/
+/.impeccable/questions/
+/.impeccable/hook.cache.json

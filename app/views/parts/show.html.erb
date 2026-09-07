@@ -1,16 +1,42 @@
-<h1>Partie <%= @part.number %> — <%= @part.title %></h1>
+<% content_for :title, "Partie #{@part.number} — #{@part.title} — RailsQuest" %>
+<% accent = part_accent(@part.number) %>
 
-<% if @part.written? %>
-  <ul>
-    <% @part.chapters.each do |chapter| %>
-      <li>
-        <%= link_to chapter.title, part_chapter_path(@part.slug, chapter.slug) %>
-        (<%= chapter.exercises.size %> exercice<%= "s" if chapter.exercises.size != 1 %>)
-      </li>
+<div class="page">
+  <div class="issue-header" style="--part-accent: <%= accent %>">
+    <span class="issue-header__number"><%= @part.number %></span>
+    <div class="issue-header__text">
+      <h1 class="issue-header__title"><%= @part.title %></h1>
+      <% if @part.written? %>
+        <p class="issue-header__meta">
+          <%= pluralize(@part.chapters.size, "chapitre") %> · <%= pluralize(@part.exercises.size, "exercice") %>
+        </p>
+      <% end %>
+    </div>
+    <span class="issue-header__mark"><%= rail_mark(color: accent, size: 44) %></span>
+  </div>
+
+  <div class="issue-body">
+    <% if @part.written? %>
+      <ul class="chapter-list">
+        <% @part.chapters.each do |chapter| %>
+          <li>
+            <%= link_to chapter.title, part_chapter_path(@part.slug, chapter.slug) %>
+            <span class="chapter-list__count">
+              <%= pluralize(chapter.exercises.size, "exercice") %>
+            </span>
+          </li>
+        <% end %>
+      </ul>
+    <% else %>
+      <p class="pending-note">Cette partie est à venir.</p>
     <% end %>
-  </ul>
-<% else %>
-  <p>Cette partie est à venir.</p>
-<% end %>
 
-<%= link_to "Retour au sommaire", root_path %>
+    <div class="issue-mark-panel" style="--part-accent: <%= accent %>">
+      <%= rail_mark(color: accent, size: 140) %>
+    </div>
+  </div>
+
+  <%= link_to root_path, class: "back-link" do %>
+    <%= back_arrow %> Retour au sommaire
+  <% end %>
+</div>

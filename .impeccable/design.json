@@ -1,0 +1,120 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-07T00:00:00Z",
+  "title": "Design System: RailsQuest",
+  "extensions": {
+    "colorMeta": {
+      "paper": { "role": "neutral", "displayName": "Papier crème", "canonical": "#f3eee3" },
+      "paper-raised": { "role": "neutral", "displayName": "Papier crème ombré", "canonical": "#ebe4d3" },
+      "ink": { "role": "neutral", "displayName": "Encre quasi-noire", "canonical": "#17140f" },
+      "ink-secondary": { "role": "neutral", "displayName": "Encre secondaire", "canonical": "#5b5648" },
+      "ink-faint": { "role": "neutral", "displayName": "Encre effacée (décorative uniquement)", "canonical": "#8c8672" },
+      "rule": { "role": "neutral", "displayName": "Filet", "canonical": "#d8d0ba" },
+      "code-bg": { "role": "neutral", "displayName": "Fond de code", "canonical": "#1b1710" },
+      "code-fg": { "role": "neutral", "displayName": "Texte de code", "canonical": "#efe8d8" },
+      "accent-0-rouille": { "role": "primary", "displayName": "Rouille (Partie 0)", "canonical": "#b5451d" },
+      "accent-1-cobalt": { "role": "secondary", "displayName": "Cobalt (Partie 1)", "canonical": "#2e5c8a" },
+      "accent-2-vert-bouteille": { "role": "secondary", "displayName": "Vert bouteille (Partie 2)", "canonical": "#2f6b4f" },
+      "accent-3-prune": { "role": "secondary", "displayName": "Prune (Partie 3)", "canonical": "#6b3a5c" },
+      "accent-4-ocre": { "role": "secondary", "displayName": "Ocre assombri (Partie 4)", "canonical": "#8a661c" },
+      "accent-5-petrole": { "role": "secondary", "displayName": "Pétrole (Partie 5)", "canonical": "#1e6b72" },
+      "accent-6-corail": { "role": "secondary", "displayName": "Corail (Partie 6)", "canonical": "#a34b4b" },
+      "accent-7-indigo": { "role": "secondary", "displayName": "Indigo (Partie 7)", "canonical": "#3b3b78" }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Titre de couverture de la Partie 0 sur l'accueil." },
+      "headline": { "displayName": "Headline", "purpose": "Titres de Partie et de chapitre." },
+      "body": { "displayName": "Body", "purpose": "Texte de lecture courant, plafonné à 68ch." },
+      "label": { "displayName": "Label", "purpose": "Navigation, statuts, légendes — jamais en kicker." },
+      "mono": { "displayName": "Mono", "purpose": "Blocs de code et clés d'exercice uniquement." }
+    },
+    "shadows": [],
+    "motion": [
+      { "name": "cover-in", "value": "translateY(0.75rem) → 0, 0.5s cubic-bezier(0.16, 1, 0.3, 1)", "purpose": "Entrée de la couverture d'accueil, depuis un état déjà visible (pas d'opacité 0)." }
+    ],
+    "breakpoints": [
+      { "name": "toc-two-col", "value": "900px" },
+      { "name": "grid-collapse", "value": "960px" },
+      { "name": "mobile", "value": "720px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Bouton d'action principal, ex. « Commencer » sur la couverture.",
+      "html": "<a class=\"ds-btn-primary\" href=\"#\">Commencer</a>",
+      "css": ".ds-btn-primary { display: inline-block; font-family: 'Source Sans 3', -apple-system, sans-serif; font-weight: 700; font-size: 0.9rem; letter-spacing: 0.04em; text-transform: uppercase; text-decoration: none; color: #f3eee3; background: #b5451d; padding: 0.75em 1.4em; border: none; transition: background 0.15s; } .ds-btn-primary:hover { background: #17140f; } .ds-btn-primary:focus-visible { outline: 2px solid #17140f; outline-offset: 3px; }"
+    },
+    {
+      "name": "Plain Button",
+      "kind": "button",
+      "refersTo": "button-plain",
+      "description": "Bouton secondaire (connexion, déconnexion, bascule d'exercice).",
+      "html": "<button class=\"ds-btn-plain\">Se connecter avec GitHub</button>",
+      "css": ".ds-btn-plain { font-family: 'Source Sans 3', -apple-system, sans-serif; font-size: 0.82rem; letter-spacing: 0.04em; color: #17140f; background: transparent; border: 1px solid #17140f; padding: 0.4em 0.9em; cursor: pointer; transition: background 0.15s, color 0.15s; } .ds-btn-plain:hover { background: #17140f; color: #f3eee3; } .ds-btn-plain:focus-visible { outline: 2px solid #17140f; outline-offset: 3px; }"
+    },
+    {
+      "name": "Issue Header",
+      "kind": "custom",
+      "refersTo": "issue-header",
+      "description": "Bandeau de Partie : numéro géant coloré, titre, marque géométrique — le composant signature du système.",
+      "html": "<div class=\"ds-issue-header\"><span class=\"ds-issue-header__number\">0</span><h1 class=\"ds-issue-header__title\">Fondamentaux &amp; philosophie Rails</h1><svg class=\"ds-issue-header__mark\" viewBox=\"0 0 32 32\" width=\"44\" height=\"44\" fill=\"none\" stroke=\"#b5451d\" stroke-width=\"2\"><line x1=\"6\" y1=\"4\" x2=\"6\" y2=\"28\"/><line x1=\"26\" y1=\"4\" x2=\"26\" y2=\"28\"/><line x1=\"6\" y1=\"9\" x2=\"26\" y2=\"9\"/><line x1=\"6\" y1=\"16\" x2=\"26\" y2=\"16\"/><line x1=\"6\" y1=\"23\" x2=\"26\" y2=\"23\"/></svg></div>",
+      "css": ".ds-issue-header { display: flex; align-items: baseline; gap: 1.5rem; padding: 2.5rem 0 1.5rem; border-bottom: 3px solid #b5451d; } .ds-issue-header__number { font-family: 'Source Serif 4', Georgia, serif; font-weight: 700; font-size: 3rem; color: #b5451d; line-height: 1; } .ds-issue-header__title { flex: 1; font-family: 'Source Serif 4', Georgia, serif; font-weight: 600; font-size: clamp(1.6rem, 3vw, 2.2rem); margin: 0; } .ds-issue-header__mark { color: #b5451d; }"
+    },
+    {
+      "name": "Table of Contents Item",
+      "kind": "custom",
+      "refersTo": "toc-item",
+      "description": "Entrée du sommaire d'accueil : numéro coloré, titre, statut.",
+      "html": "<li class=\"ds-toc-item\"><span class=\"ds-toc-item__number\">1</span><a class=\"ds-toc-item__title\" href=\"#\">Partie 1 — Modèles &amp; ActiveRecord</a><span class=\"ds-toc-item__status\">4 exercices</span></li>",
+      "css": ".ds-toc-item { display: grid; grid-template-columns: 2.5rem 1fr auto; align-items: baseline; column-gap: 0.875rem; padding: 0.875rem 0; border-top: 1px solid #d8d0ba; list-style: none; } .ds-toc-item__number { font-family: 'Source Sans 3', sans-serif; font-weight: 700; font-size: 0.95rem; color: #2e5c8a; } .ds-toc-item__title { font-family: 'Source Serif 4', Georgia, serif; font-size: 1.15rem; text-decoration: none; color: #17140f; } .ds-toc-item__status { font-family: 'Source Sans 3', sans-serif; font-size: 0.75rem; letter-spacing: 0.06em; text-transform: uppercase; color: #5b5648; }"
+    },
+    {
+      "name": "Exercise Row",
+      "kind": "custom",
+      "refersTo": "exercise-row",
+      "description": "Ligne d'exercice avec clé, titre, et bouton de bascule (fait / pas fait).",
+      "html": "<li class=\"ds-exercise\"><span class=\"ds-exercise__key\">0.1</span><span class=\"ds-exercise__title\">Installer Rails et générer un projet vide</span><button class=\"ds-exercise__btn\">Marquer comme fait</button></li>",
+      "css": ".ds-exercise { display: flex; align-items: baseline; gap: 0.875rem; padding: 0.875rem 0; border-top: 1px solid #d8d0ba; list-style: none; } .ds-exercise__key { font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: #5b5648; min-width: 2.5em; } .ds-exercise__title { flex: 1; font-family: 'Source Serif 4', Georgia, serif; } .ds-exercise__btn { font-family: 'Source Sans 3', sans-serif; font-size: 0.78rem; letter-spacing: 0.02em; background: none; border: 1px solid #8c8672; color: #5b5648; padding: 0.3em 0.7em; cursor: pointer; } .ds-exercise__btn:hover { border-color: #17140f; color: #17140f; }"
+    },
+    {
+      "name": "Code Block",
+      "kind": "custom",
+      "refersTo": "code-block",
+      "description": "Bloc de code Ruby avec coloration syntaxique sur fond encre foncée.",
+      "html": "<pre class=\"ds-code\"><code><span class=\"ds-code-c\"># app/models/donor.rb</span>\n<span class=\"ds-code-k\">class</span> <span class=\"ds-code-nc\">Donor</span> <span class=\"ds-code-o\">&lt;</span> <span class=\"ds-code-no\">ApplicationRecord</span>\n<span class=\"ds-code-k\">end</span></code></pre>",
+      "css": ".ds-code { margin: 0; padding: 0.875rem 1.5rem; overflow-x: auto; background: #1b1710; color: #efe8d8; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; line-height: 1.6; } .ds-code-c { color: #a89f88; font-style: italic; } .ds-code-k { color: #e0a45c; } .ds-code-nc, .ds-code-no { color: #7fb0d9; } .ds-code-o { color: #a89f88; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "La revue à numéros",
+    "overview": "RailsQuest se pense comme une collection de numéros de revue plutôt que comme une plateforme de cours en ligne. Chaque Partie du cursus est un numéro : elle porte sa propre encre d'accompagnement, son propre bandeau, sa propre marque géométrique — jamais le même accent partout, jamais une grille de cartes SaaS interchangeables. Le fond reste un papier crème constant et l'encre quasi-noire porte tout le texte courant ; seule la couleur d'un numéro change d'une Partie à l'autre, exactement comme la couleur d'accompagnement d'un numéro de revue imprimée. Le rejet explicite est le gabarit « plateforme de cours en ligne » générique : hero arrondi, dégradés, cartes à icônes identiques, kickers au-dessus des titres. RailsQuest est éditorial, sobre, dense en texte — un manuel technique relié en revue, pas un produit SaaS.",
+    "keyCharacteristics": [
+      "Fond papier crème constant, encre quasi-noire pour tout le texte courant.",
+      "Une encre d'accompagnement par Partie (8 teintes sourdes assignées), jamais dans le corps de texte.",
+      "Titres en serif surdimensionné aligné à gauche, façon couverture de numéro.",
+      "Aucune ombre, aucun dégradé, aucun coin arrondi prononcé — surfaces plates, séparées par des filets.",
+      "Code affiché sur un panneau encre foncée, jamais sur le papier clair."
+    ],
+    "rules": [
+      { "name": "The One Accent Rule", "body": "Une seule encre d'accompagnement est active par écran, dérivée du numéro de Partie affiché. Le corps de texte ne porte jamais cette couleur.", "section": "colors" },
+      { "name": "The No Faint Text Rule", "body": "--ink-faint n'est jamais une couleur de texte ; son contraste sur papier (~3.15:1) est sous le seuil de lisibilité 4.5:1.", "section": "colors" },
+      { "name": "The Single Serif Rule", "body": "Une seule famille serif (Source Serif 4) porte titres et corps de texte. Source Sans 3 est réservé à la chrome.", "section": "typography" },
+      { "name": "The Flat-By-Default Rule", "body": "Aucune ombre, aucun flou, aucun effet de verre. Une surface se distingue par sa couleur de fond ou une bordure fine.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do dériver la couleur d'accent d'une page de son numéro de Partie, jamais d'une valeur codée en dur.",
+      "Do garder le texte courant en --ink ou --ink-secondary uniquement.",
+      "Do utiliser des filets pour séparer des entrées de liste, jamais une carte avec ombre.",
+      "Do dessiner les icônes en SVG au même poids de trait que la navigation — jamais un glyphe unicode."
+    ],
+    "donts": [
+      "Don't ajouter de kicker ou d'eyebrow au-dessus d'un titre.",
+      "Don't utiliser le gabarit « gros chiffre + petit label » (hero-metric) pour afficher une statistique.",
+      "Don't répéter la marque géométrique plus d'une fois par page dans une intention purement décorative.",
+      "Don't introduire d'ombre portée, de dégradé, de flou décoratif ou de coin arrondi prononcé."
+    ]
+  }
+}

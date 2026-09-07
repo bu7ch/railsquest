@@ -1,15 +1,46 @@
-<h1><%= @chapter.title %></h1>
+<% content_for :title, "#{@chapter.title} — RailsQuest" %>
+<% accent = part_accent(@part.number) %>
 
-<%= raw @chapter.body_html %>
+<div class="page" style="--part-accent: <%= accent %>">
+  <div class="chapter-header">
+    <h1><%= @chapter.title %></h1>
+    <%= link_to "Partie #{@part.number} — #{@part.title}", part_path(@part.slug), class: "chapter-header__part" %>
+  </div>
 
-<h2>Exercices</h2>
-<ul>
-  <% @chapter.exercises.each do |exercise| %>
-    <%= render "chapters/exercise",
-          exercise_key: exercise.key,
-          exercise_title: exercise.title,
-          completed: @completed_keys.include?(exercise.key) %>
+  <div class="chapter-layout">
+    <div class="chapter-body">
+      <%= raw @chapter.body_html %>
+    </div>
+
+    <aside class="chapter-aside">
+      <p class="chapter-aside__label">Partie <%= @part.number %></p>
+      <ul class="chapter-aside__list">
+        <% @part.chapters.each do |chapter| %>
+          <li class="<%= "is-current" if chapter.slug == @chapter.slug %>">
+            <% if chapter.slug == @chapter.slug %>
+              <span><%= chapter.title %></span>
+            <% else %>
+              <%= link_to chapter.title, part_chapter_path(@part.slug, chapter.slug) %>
+            <% end %>
+          </li>
+        <% end %>
+      </ul>
+
+      <div class="exercises">
+        <h2>Exercices</h2>
+        <ul class="exercise-list">
+          <% @chapter.exercises.each do |exercise| %>
+            <%= render "chapters/exercise",
+                  exercise_key: exercise.key,
+                  exercise_title: exercise.title,
+                  completed: @completed_keys.include?(exercise.key) %>
+          <% end %>
+        </ul>
+      </div>
+    </aside>
+  </div>
+
+  <%= link_to part_path(@part.slug), class: "back-link" do %>
+    <%= back_arrow %> Retour à la partie
   <% end %>
-</ul>
-
-<%= link_to "Retour à la partie", part_path(@part.slug) %>
+</div>

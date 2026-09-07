@@ -37,6 +37,36 @@ class ContentLoaderTest < ActiveSupport::TestCase
     assert_equal "first-chapter", chapter.slug
   end
 
+  test "a leading heading matching the chapter title is stripped, since the page chrome renders it" do
+    chapter = loader.parts.first.chapters.first
+
+    assert_not_includes chapter.body_html, "First Chapter"
+    assert_includes chapter.body_html, "<h1"
+    assert_includes chapter.body_html, "Introduction"
+  end
+
+  test "a leading heading that does not match the chapter title is preserved" do
+    Dir.mktmpdir do |dir|
+      part_dir = Pathname.new(dir).join("00-part")
+      FileUtils.mkdir_p(part_dir)
+      File.write(part_dir.join("part.yml"), { "number" => 0, "title" => "Part", "status" => "written" }.to_yaml)
+      File.write(part_dir.join("01-chapter.md"), <<~MARKDOWN)
+        ---
+        title: "Chapter"
+        exercises: []
+        ---
+
+        # A different heading
+
+        Body text.
+      MARKDOWN
+
+      chapter = ContentLoader.new(root: Pathname.new(dir)).parts.first.chapters.first
+
+      assert_includes chapter.body_html, "A different heading"
+    end
+  end
+
   test "raises InvalidContentError when exercise keys collide across chapters" do
     dup_loader = ContentLoader.new(root: Rails.root.join("test/fixtures/invalid_content/parts"))
 

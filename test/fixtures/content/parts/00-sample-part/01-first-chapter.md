@@ -5,7 +5,7 @@ exercises:
     title: "Do the first thing"
 ---
 
-# First Chapter
+# Introduction
 
 Some **bold** text and a code block:
 

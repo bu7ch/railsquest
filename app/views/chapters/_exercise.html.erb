@@ -1,9 +1,10 @@
-<li id="exercise_<%= exercise_key.parameterize %>">
+<li id="exercise_<%= exercise_key.parameterize %>" class="exercise<%= " exercise--completed" if completed %>">
+  <span class="exercise__key"><%= exercise_key %></span>
+  <span class="exercise__title"><%= exercise_title %></span>
   <% if logged_in? %>
     <%= button_to(completed ? "Décocher" : "Marquer comme fait",
           completed ? exercise_completion_path(exercise_key) : exercise_completions_path,
           method: completed ? :delete : :post,
           params: completed ? {} : { exercise_key: exercise_key }) %>
   <% end %>
-  <%= exercise_key %> — <%= exercise_title %>
 </li>

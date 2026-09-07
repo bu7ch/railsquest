@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= content_for(:title) || "Railsquest Mvp" %></title>
+    <title><%= content_for(:title) || "RailsQuest" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="application-name" content="Railsquest Mvp">
@@ -24,21 +24,24 @@
   </head>
 
   <body>
-    <nav>
-      <% if logged_in? %>
-        <span><%= current_user.username %></span>
-        <%= link_to "Ma progression", progress_path %>
-        <%= button_to "Se déconnecter", logout_path, method: :delete %>
-      <% else %>
-        <%= button_to "Se connecter avec GitHub", "/auth/github", method: :post, data: { turbo: false } %>
-      <% end %>
-    </nav>
+    <header class="masthead">
+      <%= link_to "RailsQuest", root_path, class: "masthead__name" %>
+      <nav class="masthead__nav">
+        <% if logged_in? %>
+          <span class="masthead__user"><%= current_user.username %></span>
+          <%= link_to "Ma progression", progress_path %>
+          <%= button_to "Se déconnecter", logout_path, method: :delete, class: "button-plain" %>
+        <% else %>
+          <%= button_to "Se connecter avec GitHub", "/auth/github", method: :post, data: { turbo: false }, class: "button-plain" %>
+        <% end %>
+      </nav>
+    </header>
 
     <% if notice %>
-      <p class="flash-notice"><%= notice %></p>
+      <p class="flash flash-notice"><%= notice %></p>
     <% end %>
     <% if alert %>
-      <p class="flash-alert"><%= alert %></p>
+      <p class="flash flash-alert"><%= alert %></p>
     <% end %>
 
     <%= yield %>

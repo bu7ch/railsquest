@@ -1,13 +1,32 @@
-<h1>RailsQuest</h1>
-<p>Un cours Rails, inspiré de Full Stack Open, avec un fil rouge : un CRM de dons pour association.</p>
+<% content_for :title, "RailsQuest — Un cours Rails en 8 parties" %>
+<% cover = @parts.first %>
+<% rest = @parts.drop(1) %>
 
-<ol>
-  <% @parts.each do |part| %>
-    <li>
-      <%= link_to "Partie #{part.number} — #{part.title}", part_path(part.slug) %>
-      <% unless part.written? %>
-        <span>(à venir)</span>
-      <% end %>
-    </li>
-  <% end %>
-</ol>
+<div class="page">
+  <section class="cover" style="--part-accent: <%= part_accent(cover.number) %>">
+    <div>
+      <h1 class="cover__heading">
+        <%= link_to "Partie #{cover.number} — #{cover.title}", part_path(cover.slug) %>
+      </h1>
+      <p class="cover__lede">
+        Un cours Rails inspiré de Full Stack Open : huit numéros, un seul fil
+        rouge — un CRM de dons pour association — construit de bout en bout,
+        chapitre après chapitre.
+      </p>
+      <%= link_to "Commencer", part_path(cover.slug), class: "cover__cta" %>
+    </div>
+    <div class="cover__mark-panel">
+      <%= rail_mark(color: part_accent(cover.number), size: 200) %>
+    </div>
+  </section>
+
+  <ol class="toc">
+    <% rest.each do |part| %>
+      <li class="toc__item<%= " toc__item--pending" unless part.written? %>">
+        <span class="toc__number" style="color: <%= part_accent(part.number) %>"><%= part.number %></span>
+        <%= link_to "Partie #{part.number} — #{part.title}", part_path(part.slug), class: "toc__title" %>
+        <span class="toc__status"><%= part.written? ? "#{part.exercises.size} exercices" : "à venir" %></span>
+      </li>
+    <% end %>
+  </ol>
+</div>
