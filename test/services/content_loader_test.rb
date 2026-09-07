@@ -84,4 +84,19 @@ class ContentLoaderTest < ActiveSupport::TestCase
     assert_equal 2, part1.chapters.size
     assert_equal ["1.1", "1.2", "1.3", "1.4"], part1.exercises.map(&:key)
   end
+
+  test "part 2 is written with 2 chapters and 3 exercises" do
+    part2 = ContentLoader.parts.find { |p| p.number == 2 }
+
+    assert_equal "written", part2.status
+    assert_equal 2, part2.chapters.size
+    assert_equal ["2.1", "2.2", "2.3"], part2.exercises.map(&:key)
+  end
+
+  test "all written parts together expose 10 exercises with globally unique keys" do
+    all_keys = ContentLoader.parts.flat_map(&:exercises).map(&:key)
+
+    assert_equal 10, all_keys.size
+    assert_equal all_keys, all_keys.uniq
+  end
 end
