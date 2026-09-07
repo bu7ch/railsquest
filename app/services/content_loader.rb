@@ -67,10 +67,10 @@ class ContentLoader
   end
 
   def split_front_matter(raw)
-    return ["", raw] unless raw.start_with?("---")
+    return [ "", raw ] unless raw.start_with?("---")
 
     _, front_matter, body = raw.split(/^---\s*$/, 3)
-    [front_matter, body]
+    [ front_matter, body ]
   end
 
   def render_markdown(body)

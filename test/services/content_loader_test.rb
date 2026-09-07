@@ -10,8 +10,8 @@ class ContentLoaderTest < ActiveSupport::TestCase
   test "parses parts sorted by number" do
     parts = loader.parts
 
-    assert_equal [0, 1], parts.map(&:number)
-    assert_equal ["Sample Part", "Second Part"], parts.map(&:title)
+    assert_equal [ 0, 1 ], parts.map(&:number)
+    assert_equal [ "Sample Part", "Second Part" ], parts.map(&:title)
   end
 
   test "a part with no chapter files has an empty chapters list" do
@@ -25,7 +25,7 @@ class ContentLoaderTest < ActiveSupport::TestCase
     chapter = loader.parts.first.chapters.first
 
     assert_equal "First Chapter", chapter.title
-    assert_equal [Content::Exercise.new(key: "0.1", title: "Do the first thing")], chapter.exercises
+    assert_equal [ Content::Exercise.new(key: "0.1", title: "Do the first thing") ], chapter.exercises
     assert_includes chapter.body_html, "<h1"
     assert_includes chapter.body_html, "<strong>bold</strong>"
     assert_includes chapter.body_html, "highlight"
@@ -64,7 +64,7 @@ class ContentLoaderTest < ActiveSupport::TestCase
     parts = ContentLoader.parts
     coming_soon = parts.select { |p| p.number.between?(3, 7) }
 
-    assert_equal [3, 4, 5, 6, 7], coming_soon.map(&:number)
+    assert_equal [ 3, 4, 5, 6, 7 ], coming_soon.map(&:number)
     assert coming_soon.all? { |p| p.status == "coming_soon" }
     assert coming_soon.all? { |p| p.chapters.empty? }
   end
@@ -74,7 +74,7 @@ class ContentLoaderTest < ActiveSupport::TestCase
 
     assert_equal "written", part0.status
     assert_equal 2, part0.chapters.size
-    assert_equal ["0.1", "0.2", "0.3"], part0.exercises.map(&:key)
+    assert_equal [ "0.1", "0.2", "0.3" ], part0.exercises.map(&:key)
   end
 
   test "part 1 is written with 2 chapters and 4 exercises" do
@@ -82,7 +82,7 @@ class ContentLoaderTest < ActiveSupport::TestCase
 
     assert_equal "written", part1.status
     assert_equal 2, part1.chapters.size
-    assert_equal ["1.1", "1.2", "1.3", "1.4"], part1.exercises.map(&:key)
+    assert_equal [ "1.1", "1.2", "1.3", "1.4" ], part1.exercises.map(&:key)
   end
 
   test "part 2 is written with 2 chapters and 3 exercises" do
@@ -90,7 +90,7 @@ class ContentLoaderTest < ActiveSupport::TestCase
 
     assert_equal "written", part2.status
     assert_equal 2, part2.chapters.size
-    assert_equal ["2.1", "2.2", "2.3"], part2.exercises.map(&:key)
+    assert_equal [ "2.1", "2.2", "2.3" ], part2.exercises.map(&:key)
   end
 
   test "all written parts together expose 10 exercises with globally unique keys" do
