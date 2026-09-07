@@ -21,6 +21,15 @@ class ExerciseCompletionsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test "create rejects an exercise_key that does not correspond to real content" do
+    sign_in_as(@user)
+
+    assert_no_difference "ExerciseCompletion.count" do
+      post exercise_completions_path, params: { exercise_key: "99.99" }
+    end
+    assert_response :not_found
+  end
+
   test "destroy un-marks the exercise for the logged-in user" do
     sign_in_as(@user)
     @user.exercise_completions.create!(exercise_key: "0.1")

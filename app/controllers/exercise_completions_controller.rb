@@ -2,6 +2,9 @@ class ExerciseCompletionsController < ApplicationController
   before_action :require_login
 
   def create
+    exercise = ContentLoader.parts.flat_map(&:exercises).find { |e| e.key == params[:exercise_key] }
+    head :not_found and return unless exercise
+
     current_user.exercise_completions.find_or_create_by!(exercise_key: params[:exercise_key])
     render_exercise_state(params[:exercise_key], completed: true)
   end

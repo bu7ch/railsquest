@@ -5,5 +5,7 @@ class ChaptersController < ApplicationController
 
     @chapter = @part.chapters.find { |chapter| chapter.slug == params[:slug] }
     raise ActionController::RoutingError, "Chapter not found" unless @chapter
+
+    @completed_keys = logged_in? ? current_user.exercise_completions.pluck(:exercise_key) : []
   end
 end
