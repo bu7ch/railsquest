@@ -5,7 +5,10 @@
 <h2>Exercices</h2>
 <ul>
   <% @chapter.exercises.each do |exercise| %>
-    <li><%= exercise.key %> — <%= exercise.title %></li>
+    <%= render "chapters/exercise",
+          exercise_key: exercise.key,
+          exercise_title: exercise.title,
+          completed: logged_in? && current_user.completed?(exercise.key) %>
   <% end %>
 </ul>
 

@@ -7,4 +7,8 @@ class User < ApplicationRecord
       user.avatar_url = auth.info.image
     end
   end
+
+  def completed?(exercise_key)
+    exercise_completions.exists?(exercise_key: exercise_key)
+  end
 end

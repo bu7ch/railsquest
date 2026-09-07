@@ -10,7 +10,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_07_140203) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_07_141232) do
+  create_table "exercise_completions", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "exercise_key", null: false
+    t.datetime "updated_at", null: false
+    t.integer "user_id", null: false
+    t.index ["user_id", "exercise_key"], name: "index_exercise_completions_on_user_id_and_exercise_key", unique: true
+    t.index ["user_id"], name: "index_exercise_completions_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "avatar_url"
     t.datetime "created_at", null: false
@@ -19,4 +28,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_07_140203) do
     t.string "username"
     t.index ["github_id"], name: "index_users_on_github_id", unique: true
   end
+
+  add_foreign_key "exercise_completions", "users"
 end

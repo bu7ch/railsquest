@@ -19,4 +19,10 @@ Rails.application.routes.draw do
   get "/auth/:provider/callback", to: "sessions#create"
   get "/auth/failure", to: "sessions#failure"
   delete "/logout", to: "sessions#destroy"
+
+  resources :exercise_completions, only: [ :create ]
+  delete "/exercise_completions/:exercise_key", to: "exercise_completions#destroy",
+    as: :exercise_completion, constraints: { exercise_key: /[^\/]+/ }
+
+  post "/session_for_test", to: "sessions#create_for_test" if Rails.env.test?
 end

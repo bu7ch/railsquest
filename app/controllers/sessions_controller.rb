@@ -14,4 +14,9 @@ class SessionsController < ApplicationController
   def failure
     redirect_to root_path, alert: "Échec de la connexion GitHub."
   end
+
+  def create_for_test
+    session[:user_id] = params[:user_id]
+    head :ok
+  end
 end
