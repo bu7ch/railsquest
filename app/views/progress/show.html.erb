@@ -1,0 +1,18 @@
+<h1>Votre progression</h1>
+
+<% total_exercises = @parts.flat_map(&:exercises) %>
+<% total_completed = total_exercises.count { |ex| @completed_keys.include?(ex.key) } %>
+
+<p>Total : <%= total_completed %> / <%= total_exercises.size %></p>
+
+<ul>
+  <% @parts.each do |part| %>
+    <% part_completed = part.exercises.count { |ex| @completed_keys.include?(ex.key) } %>
+    <li>
+      Partie <%= part.number %> — <%= part.title %> :
+      <%= part_completed %> / <%= part.exercises.size %>
+    </li>
+  <% end %>
+</ul>
+
+<%= link_to "Retour au sommaire", root_path %>

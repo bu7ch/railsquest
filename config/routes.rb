@@ -20,6 +20,8 @@ Rails.application.routes.draw do
   get "/auth/failure", to: "sessions#failure"
   delete "/logout", to: "sessions#destroy"
 
+  resource :progress, only: [ :show ], controller: "progress"
+
   resources :exercise_completions, only: [ :create ]
   delete "/exercise_completions/:exercise_key", to: "exercise_completions#destroy",
     as: :exercise_completion, constraints: { exercise_key: /[^\/]+/ }

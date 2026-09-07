@@ -27,6 +27,7 @@
     <nav>
       <% if logged_in? %>
         <span><%= current_user.username %></span>
+        <%= link_to "Ma progression", progress_path %>
         <%= button_to "Se déconnecter", logout_path, method: :delete %>
       <% else %>
         <%= button_to "Se connecter avec GitHub", "/auth/github", method: :post, data: { turbo: false } %>
