@@ -59,4 +59,13 @@ class ContentLoaderTest < ActiveSupport::TestCase
     assert ContentLoader.parts.is_a?(Array)
     assert ContentLoader.parts.all? { |part| part.is_a?(Content::Part) }
   end
+
+  test "the real course content has 8 parts, 3-7 coming soon with no chapters" do
+    parts = ContentLoader.parts
+    coming_soon = parts.select { |p| p.number.between?(3, 7) }
+
+    assert_equal [3, 4, 5, 6, 7], coming_soon.map(&:number)
+    assert coming_soon.all? { |p| p.status == "coming_soon" }
+    assert coming_soon.all? { |p| p.chapters.empty? }
+  end
 end
