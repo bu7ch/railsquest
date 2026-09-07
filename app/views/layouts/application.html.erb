@@ -24,6 +24,22 @@
   </head>
 
   <body>
+    <nav>
+      <% if logged_in? %>
+        <span><%= current_user.username %></span>
+        <%= button_to "Se déconnecter", logout_path, method: :delete %>
+      <% else %>
+        <%= button_to "Se connecter avec GitHub", "/auth/github", method: :post, data: { turbo: false } %>
+      <% end %>
+    </nav>
+
+    <% if notice %>
+      <p class="flash-notice"><%= notice %></p>
+    <% end %>
+    <% if alert %>
+      <p class="flash-alert"><%= alert %></p>
+    <% end %>
+
     <%= yield %>
   </body>
 </html>

@@ -15,4 +15,8 @@ Rails.application.routes.draw do
   resources :parts, only: [ :show ], param: :slug do
     resources :chapters, only: [ :show ], param: :slug
   end
+
+  get "/auth/:provider/callback", to: "sessions#create"
+  get "/auth/failure", to: "sessions#failure"
+  delete "/logout", to: "sessions#destroy"
 end
