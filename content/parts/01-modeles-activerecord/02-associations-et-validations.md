@@ -32,6 +32,9 @@ automatiquement `belongs_to :donor` dans `Donation`.
 ```ruby
 # app/models/donor.rb
 class Donor < ApplicationRecord
+  validates :name, presence: true
+  validates :email, presence: true, uniqueness: true
+
   has_many :donations
 end
 ```
@@ -53,7 +56,10 @@ end
 ```
 
 `belongs_to` est obligatoire par défaut dans Rails : une `Donation` sans
-`donor_id` ni `campaign_id` échouera à la validation.
+`donor_id` ni `campaign_id` échouera à la validation. `has_many :donations`
+s'ajoute aux validations de `Donor` du chapitre précédent — sans les
+remplacer : une classe Ruby ne perd jamais ce qu'elle contenait déjà
+parce qu'on lui ajoute une ligne.
 
 ## Naviguer les associations
 

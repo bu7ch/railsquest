@@ -91,6 +91,9 @@ plutôt que de répéter la même clause `where` partout où elle sert :
 
 ```ruby
 class Donor < ApplicationRecord
+  validates :name, presence: true
+  validates :email, presence: true, uniqueness: true
+
   scope :recent, -> { order(created_at: :desc) }
 end
 ```
