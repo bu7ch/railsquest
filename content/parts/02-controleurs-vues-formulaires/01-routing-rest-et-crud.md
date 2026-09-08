@@ -8,7 +8,7 @@ exercises:
   - key: "2.3"
     title: "Ajouter des liens de navigation entre les pages"
   - key: "2.4"
-    title: "Restreindre les routes générées avec only:"
+    title: "Publier une page Campagnes en lecture seule avec only:"
   - key: "2.5"
     title: "Vérifier le comportement en cas d'échec de validation"
 ---
@@ -16,7 +16,10 @@ exercises:
 # Routing REST et CRUD complet
 
 `resources :donors` dans `config/routes.rb` génère 7 routes correspondant
-aux opérations CRUD (Create, Read, Update, Delete) :
+aux opérations CRUD (Create, Read, Update, Delete). Ce chapitre construit
+l'interface complète de gestion des donateurs — le premier CRUD entier du
+CRM — puis l'utilise pour donner à `only:` un cas d'usage réel plutôt
+qu'un exemple jetable.
 
 | Verbe HTTP | URL | Action | Usage |
 |---|---|---|---|
@@ -97,21 +100,38 @@ route nommée :
 partir de l'objet passé en second argument — encore une déduction de
 Rails plutôt qu'une URL écrite à la main.
 
-## Restreindre les routes générées
+## Une ressource qui n'a pas besoin des 7 actions
 
-`resources :donors` génère les 7 routes par défaut, mais toutes ne sont
-pas toujours utiles. `only:` (ou son inverse `except:`) limite la
-génération à ce qui existe réellement :
+Le CRM a aussi besoin d'une page publique listant les campagnes en
+cours, pour que l'association puisse la partager — mais sans formulaire
+de création, sans édition, sans suppression : les campagnes, elles,
+restent gérées depuis la console pour l'instant. `only:` limite
+`resources` à ce qui existe réellement :
 
 ```ruby
-resources :donors, only: %i[index show new create edit update destroy]
+# config/routes.rb
+resources :campaigns, only: %i[index show]
 ```
 
-Une ressource qui n'expose jamais de suppression, par exemple, peut
-écrire `only: %i[index show new create edit update]` — `bin/rails routes`
-n'affichera alors plus jamais de route `DELETE` pour cette ressource,
-et toute tentative d'y accéder renverra une erreur de routage plutôt que
-d'atteindre un contrôleur qui n'a pas cette action.
+```ruby
+# app/controllers/campaigns_controller.rb
+class CampaignsController < ApplicationController
+  def index
+    @campaigns = Campaign.all
+  end
+
+  def show
+    @campaign = Campaign.find(params[:id])
+  end
+end
+```
+
+`bin/rails routes` n'affiche alors que deux routes pour `campaigns` — ni
+`new`, ni `create`, ni `edit`, ni `update`, ni `destroy` n'existent, et
+toute tentative d'y accéder renverra une erreur de routage plutôt que
+d'atteindre un contrôleur qui n'a pas cette action. C'est un choix
+durable, pas une restriction temporaire : cette page publique en lecture
+seule reste telle quelle pour le reste du cours.
 
 ## Exercices
 
@@ -134,13 +154,12 @@ Dans `index.html.erb`, remplacez le texte brut du nom par un `link_to`
 vers la fiche du donateur. Sur la page `show`, ajoutez un lien retour
 vers `index` et un lien vers `edit`.
 
-**2.4 — Restreindre les routes générées avec `only:`**
+**2.4 — Publier une page Campagnes en lecture seule avec `only:`**
 
-Si votre CRM n'expose pas encore de suppression accessible publiquement,
-déclarez temporairement `resources :donors, only: %i[index show new
-create edit update]`, lancez `bin/rails routes` et constatez que la route
-`DELETE` a disparu. Remettez `resources :donors` sans restriction une
-fois l'exercice terminé, puisque la partie suivante en aura besoin.
+Ajoutez `resources :campaigns, only: %i[index show]`, le contrôleur et
+les deux vues correspondantes (une liste, une fiche). Lancez
+`bin/rails routes` et vérifiez qu'aucune route de création, modification
+ou suppression n'existe pour `campaigns`.
 
 **2.5 — Vérifier le comportement en cas d'échec de validation**
 

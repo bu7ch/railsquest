@@ -8,7 +8,7 @@ exercises:
   - key: "2.8"
     title: "Afficher les erreurs de validation dans le formulaire"
   - key: "2.9"
-    title: "Ajouter un flash d'alerte distinct du notice"
+    title: "Refuser la suppression d'un donateur ayant des dons"
   - key: "2.10"
     title: "Confirmer une suppression avec turbo_confirm"
 ---
@@ -110,9 +110,30 @@ convention : la première pour une confirmation, la seconde pour un
 avertissement ou une erreur — deux couleurs, deux tons, jamais confondus
 dans l'interface.
 
+## Refuser une suppression
+
+La suppression ajoutée au chapitre précédent (`destroy`) fonctionne pour
+n'importe quel donateur — y compris un donateur qui a déjà des dons
+enregistrés (partie 1), ce qui laisserait des `Donation` orphelines.
+`alert` sert exactement ce cas : un refus, expliqué, plutôt qu'une
+suppression silencieuse ou un plantage.
+
 ```ruby
-redirect_to donors_path, alert: "Ce donateur est déjà associé à des dons."
+# app/controllers/donors_controller.rb
+def destroy
+  @donor = Donor.find(params[:id])
+  if @donor.donations.any?
+    redirect_to @donor, alert: "Ce donateur a des dons enregistrés : suppression impossible."
+  else
+    @donor.destroy
+    redirect_to donors_path, notice: "Donateur supprimé."
+  end
+end
 ```
+
+`@donor.donations.any?` réutilise l'association `has_many :donations`
+déclarée en partie 1 — le contrôleur consulte une règle métier qui vit
+sur le modèle, il ne la réimplémente pas.
 
 ## Confirmer une action destructive
 
@@ -147,15 +168,18 @@ Ajoutez le bloc d'erreurs ci-dessus en tête de `_form.html.erb`.
 Soumettez le formulaire sans nom et vérifiez que le message d'erreur
 s'affiche bien au-dessus des champs.
 
-**2.9 — Ajouter un flash d'alerte distinct du `notice`**
+**2.9 — Refuser la suppression d'un donateur ayant des dons**
 
-Trouvez un cas légitime dans votre CRM pour un `alert` plutôt qu'un
-`notice` (par exemple : tentative de suppression d'un donateur qui a des
-dons associés, refusée). Vérifiez que les deux messages s'affichent avec
-des styles visuellement différents.
+Modifiez `destroy` comme ci-dessus. Créez un donateur, associez-lui un
+don depuis la console (partie 1), puis tentez de le supprimer depuis
+l'interface : vérifiez que la suppression est refusée avec le message
+d'alerte. Vérifiez ensuite qu'un donateur sans don se supprime
+normalement, avec le `notice` habituel.
 
 **2.10 — Confirmer une suppression avec `turbo_confirm`**
 
 Ajoutez `data: { turbo_confirm: "..." }` au bouton de suppression de la
-page `show`. Vérifiez qu'annuler la boîte de dialogue n'envoie aucune
-requête (onglet réseau des outils de développement).
+page `show`, pour qu'une suppression réellement acceptée par l'exercice
+précédent demande encore une confirmation avant de partir. Vérifiez
+qu'annuler la boîte de dialogue n'envoie aucune requête (onglet réseau
+des outils de développement).
