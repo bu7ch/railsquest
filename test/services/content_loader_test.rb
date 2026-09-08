@@ -90,11 +90,11 @@ class ContentLoaderTest < ActiveSupport::TestCase
     assert ContentLoader.parts.all? { |part| part.is_a?(Content::Part) }
   end
 
-  test "the real course content has 8 parts, 6-7 coming soon with no chapters" do
+  test "the real course content has 8 parts, 7 coming soon with no chapters" do
     parts = ContentLoader.parts
-    coming_soon = parts.select { |p| p.number.between?(6, 7) }
+    coming_soon = parts.select { |p| p.number.between?(7, 7) }
 
-    assert_equal [ 6, 7 ], coming_soon.map(&:number)
+    assert_equal [ 7 ], coming_soon.map(&:number)
     assert coming_soon.all? { |p| p.status == "coming_soon" }
     assert coming_soon.all? { |p| p.chapters.empty? }
   end
@@ -165,10 +165,21 @@ class ContentLoaderTest < ActiveSupport::TestCase
     )
   end
 
-  test "all written parts together expose 60 exercises with globally unique keys" do
+  test "part 6 is written with 2 chapters and 10 exercises" do
+    part6 = ContentLoader.parts.find { |p| p.number == 6 }
+
+    assert_equal "written", part6.status
+    assert_equal 2, part6.chapters.size
+    assert_equal(
+      [ "6.1", "6.2", "6.3", "6.4", "6.5", "6.6", "6.7", "6.8", "6.9", "6.10" ],
+      part6.exercises.map(&:key)
+    )
+  end
+
+  test "all written parts together expose 70 exercises with globally unique keys" do
     all_keys = ContentLoader.parts.flat_map(&:exercises).map(&:key)
 
-    assert_equal 60, all_keys.size
+    assert_equal 70, all_keys.size
     assert_equal all_keys, all_keys.uniq
   end
 end

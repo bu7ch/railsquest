@@ -15,6 +15,6 @@ class ProgressControllerTest < ActionDispatch::IntegrationTest
     get progress_path
 
     assert_response :success
-    assert_select "body", /1\s*\/\s*60/
+    assert_select "body", /1\s*\/\s*70/
   end
 end
