@@ -68,6 +68,8 @@ diffuser via **Action Cable**, déjà configuré par défaut (Solid Cable).
 class Donation < ApplicationRecord
   belongs_to :donor
   belongs_to :campaign
+  validates :amount_cents, numericality: { greater_than: 0 }
+  validates :donor_id, uniqueness: { scope: [ :campaign_id, :amount_cents ] }
 
   after_create_commit -> { broadcast_prepend_to campaign, target: "donations" }
 end
