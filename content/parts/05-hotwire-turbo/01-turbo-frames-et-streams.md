@@ -126,14 +126,15 @@ qu'aucune erreur n'est levée (même sans abonné pour l'instant).
 
 Ajoutez `turbo_stream_from @campaign` et le conteneur `id="donations"` à
 `campaigns/show.html.erb`. Ouvrez la page dans un navigateur, créez un
-don depuis un autre onglet (formulaire ou console), et observez son
-apparition sans rechargement.
+don depuis `bin/rails console` (aucun formulaire n'existe encore — le
+chapitre suivant en ajoute un), et observez son apparition sans
+rechargement.
 
 **5.4 — Vérifier la mise à jour en direct avec deux onglets**
 
 Ouvrez la page d'une même campagne dans deux onglets côte à côte. Créez
-un don depuis le formulaire dans l'un des deux onglets et vérifiez qu'il
-apparaît instantanément dans l'autre.
+un don depuis la console dans un terminal à côté et vérifiez qu'il
+apparaît instantanément dans les deux onglets.
 
 **5.5 — Diffuser la suppression d'un don**
 
