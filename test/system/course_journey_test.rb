@@ -33,6 +33,6 @@ class CourseJourneyTest < ApplicationSystemTestCase
 
     click_on "Ma progression"
 
-    assert_text "1 / 50"
+    assert_text "1 / 60"
   end
 end
