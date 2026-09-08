@@ -1,0 +1,10 @@
+<ul class="chapter-list">
+  <% part.chapters.each do |chapter| %>
+    <li>
+      <%= link_to chapter.title, part_chapter_path(part.slug, chapter.slug) %>
+      <span class="chapter-list__count">
+        <%= pluralize(chapter.exercises.size, "exercice") %>
+      </span>
+    </li>
+  <% end %>
+</ul>

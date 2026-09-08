@@ -1,7 +1,6 @@
 <% content_for :title, "Votre progression — RailsQuest" %>
 <% total_exercises = @parts.flat_map(&:exercises) %>
 <% total_completed = total_exercises.count { |ex| @completed_keys.include?(ex.key) } %>
-<% percent = total_exercises.empty? ? 0 : (total_completed * 100.0 / total_exercises.size).round %>
 
 <div class="page">
   <h1>Votre progression</h1>
@@ -21,10 +20,23 @@
       <% end %>
     </ul>
 
-    <div class="progress-mark-panel">
-      <span class="progress-mark-panel__figure"><%= percent %>%</span>
-      <span class="progress-mark-panel__label">complété</span>
-    </div>
+    <% if @next_exercise %>
+      <div class="progress-next">
+        <p class="progress-next__label">Reprendre</p>
+        <p class="progress-next__title"><%= @next_exercise[:exercise].title %></p>
+        <p class="progress-next__meta">
+          Partie <%= @next_exercise[:part].number %> — <%= @next_exercise[:chapter].title %>
+        </p>
+        <%= link_to "Continuer",
+              part_chapter_path(@next_exercise[:part].slug, @next_exercise[:chapter].slug),
+              class: "button-plain" %>
+      </div>
+    <% else %>
+      <div class="progress-next">
+        <p class="progress-next__label">Reprendre</p>
+        <p class="progress-next__title">Tous les exercices écrits sont faits.</p>
+      </div>
+    <% end %>
   </div>
 
   <%= link_to root_path, class: "back-link" do %>

@@ -161,11 +161,14 @@ Langage rectiligne : pas de coin arrondi prononcé nulle part, à l'exception du
 - **Plain (connexion, déconnexion, bascule d'exercice) :** fond transparent, bordure 1px encre, devient plein (fond encre / texte papier) au survol.
 - **Hover / Focus :** transition de fond immédiate (pas de délai), `outline: 2px solid var(--ink)` au focus clavier — jamais l'anneau bleu par défaut du navigateur.
 
-### Cards / Panels (panneaux de marque)
+### Cards / Panels
 - **Corner Style :** aucun radius.
-- **Background :** `--paper-raised`, ou une teinte de l'encre d'accompagnement à 10% d'opacité (`color-mix`) sur la couverture et la page de Partie.
+- **Background :** `--paper-raised` pour un panneau en retrait (ex. le panneau « Reprendre » de la page de progression) ; sinon transparent, délimité par une bordure fine.
 - **Shadow Strategy :** aucune — voir Elevation.
-- **Border :** aucune ; le panneau se distingue par sa couleur de fond seule.
+- **Border :** 1px `--rule` quand un panneau a besoin d'un contour (ex. `progress-next`) ; jamais de fond teinté à l'encre d'accompagnement comme substitut de contenu.
+
+### Listes secondaires à contenu réel (`issue-exercises`, `progress-next`)
+Quand une page a de l'espace à remplir à côté de son contenu principal (page de Partie, page de progression), ce sont des données réelles qui le remplissent — la liste de tous les exercices de la Partie, ou le prochain exercice à faire — jamais un élément décoratif. Une page sans second contenu réel à offrir (ex. une Partie « à venir ») reste sur une seule colonne plutôt que d'inventer un panneau vide.
 
 ### Navigation (masthead)
 - **Style :** nom du site en petites capitales tracées (Source Sans 3, 700), liens/boutons alignés à droite, séparés du contenu par un filet fin.
@@ -189,6 +192,7 @@ Chaque page de Partie et de chapitre ouvre sur un bandeau de 3px dans l'encre d'
 
 ### Don't:
 - **Don't** ajouter de kicker ou d'eyebrow au-dessus d'un titre — le titre porte sa propre information (le numéro de Partie s'intègre dans le H1 lui-même, jamais au-dessus).
-- **Don't** utiliser le gabarit « gros chiffre + petit label » (hero-metric) pour afficher une statistique — c'est un défaut connu de la page de progression actuelle, pas une règle du système à reproduire ailleurs.
-- **Don't** répéter la marque géométrique (`rail_mark`) plus d'une fois par page dans une intention purement décorative — sa valeur tient à sa rareté ; l'utiliser deux fois sur la page de Partie actuelle est un défaut constaté, pas un pattern à généraliser.
+- **Don't** utiliser le gabarit « gros chiffre + petit label » (hero-metric) pour afficher une statistique.
+- **Don't** faire réapparaître la marque géométrique (`rail_mark`) plus d'une fois par page — un seul rendu, dans le bandeau de Partie/chapitre, jamais ailleurs comme remplissage décoratif.
+- **Don't** remplir un espace vide avec de la décoration (panneau teinté, chiffre géant, marque répétée) quand la page n'a pas de second contenu réel à offrir — préférer une seule colonne à une colonne inventée.
 - **Don't** introduire d'ombre portée, de dégradé, de flou décoratif ou de coin arrondi prononcé nulle part dans le système.

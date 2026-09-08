@@ -15,26 +15,29 @@
     <span class="issue-header__mark"><%= rail_mark(color: accent, size: 44) %></span>
   </div>
 
-  <div class="issue-body">
-    <% if @part.written? %>
-      <ul class="chapter-list">
-        <% @part.chapters.each do |chapter| %>
-          <li>
-            <%= link_to chapter.title, part_chapter_path(@part.slug, chapter.slug) %>
-            <span class="chapter-list__count">
-              <%= pluralize(chapter.exercises.size, "exercice") %>
-            </span>
-          </li>
-        <% end %>
-      </ul>
-    <% else %>
-      <p class="pending-note">Cette partie est à venir.</p>
-    <% end %>
+  <% if @part.written? && @part.exercises.any? %>
+    <div class="issue-body">
+      <%= render "parts/chapter_list", part: @part %>
 
-    <div class="issue-mark-panel" style="--part-accent: <%= accent %>">
-      <%= rail_mark(color: accent, size: 140) %>
+      <div class="issue-exercises">
+        <p class="issue-exercises__label">Exercices de cette partie</p>
+        <ul class="issue-exercises__list">
+          <% @part.chapters.each do |chapter| %>
+            <% chapter.exercises.each do |exercise| %>
+              <li>
+                <span class="issue-exercises__key"><%= exercise.key %></span>
+                <%= link_to exercise.title, part_chapter_path(@part.slug, chapter.slug) %>
+              </li>
+            <% end %>
+          <% end %>
+        </ul>
+      </div>
     </div>
-  </div>
+  <% elsif @part.written? %>
+    <%= render "parts/chapter_list", part: @part %>
+  <% else %>
+    <p class="pending-note">Cette partie est à venir.</p>
+  <% end %>
 
   <%= link_to root_path, class: "back-link" do %>
     <%= back_arrow %> Retour au sommaire

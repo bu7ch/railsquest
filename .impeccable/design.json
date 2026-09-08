@@ -4,38 +4,130 @@
   "title": "Design System: RailsQuest",
   "extensions": {
     "colorMeta": {
-      "paper": { "role": "neutral", "displayName": "Papier crème", "canonical": "#f3eee3" },
-      "paper-raised": { "role": "neutral", "displayName": "Papier crème ombré", "canonical": "#ebe4d3" },
-      "ink": { "role": "neutral", "displayName": "Encre quasi-noire", "canonical": "#17140f" },
-      "ink-secondary": { "role": "neutral", "displayName": "Encre secondaire", "canonical": "#5b5648" },
-      "ink-faint": { "role": "neutral", "displayName": "Encre effacée (décorative uniquement)", "canonical": "#8c8672" },
-      "rule": { "role": "neutral", "displayName": "Filet", "canonical": "#d8d0ba" },
-      "code-bg": { "role": "neutral", "displayName": "Fond de code", "canonical": "#1b1710" },
-      "code-fg": { "role": "neutral", "displayName": "Texte de code", "canonical": "#efe8d8" },
-      "accent-0-rouille": { "role": "primary", "displayName": "Rouille (Partie 0)", "canonical": "#b5451d" },
-      "accent-1-cobalt": { "role": "secondary", "displayName": "Cobalt (Partie 1)", "canonical": "#2e5c8a" },
-      "accent-2-vert-bouteille": { "role": "secondary", "displayName": "Vert bouteille (Partie 2)", "canonical": "#2f6b4f" },
-      "accent-3-prune": { "role": "secondary", "displayName": "Prune (Partie 3)", "canonical": "#6b3a5c" },
-      "accent-4-ocre": { "role": "secondary", "displayName": "Ocre assombri (Partie 4)", "canonical": "#8a661c" },
-      "accent-5-petrole": { "role": "secondary", "displayName": "Pétrole (Partie 5)", "canonical": "#1e6b72" },
-      "accent-6-corail": { "role": "secondary", "displayName": "Corail (Partie 6)", "canonical": "#a34b4b" },
-      "accent-7-indigo": { "role": "secondary", "displayName": "Indigo (Partie 7)", "canonical": "#3b3b78" }
+      "paper": {
+        "role": "neutral",
+        "displayName": "Papier crème",
+        "canonical": "#f3eee3"
+      },
+      "paper-raised": {
+        "role": "neutral",
+        "displayName": "Papier crème ombré",
+        "canonical": "#ebe4d3"
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Encre quasi-noire",
+        "canonical": "#17140f"
+      },
+      "ink-secondary": {
+        "role": "neutral",
+        "displayName": "Encre secondaire",
+        "canonical": "#5b5648"
+      },
+      "ink-faint": {
+        "role": "neutral",
+        "displayName": "Encre effacée (décorative uniquement)",
+        "canonical": "#8c8672"
+      },
+      "rule": {
+        "role": "neutral",
+        "displayName": "Filet",
+        "canonical": "#d8d0ba"
+      },
+      "code-bg": {
+        "role": "neutral",
+        "displayName": "Fond de code",
+        "canonical": "#1b1710"
+      },
+      "code-fg": {
+        "role": "neutral",
+        "displayName": "Texte de code",
+        "canonical": "#efe8d8"
+      },
+      "accent-0-rouille": {
+        "role": "primary",
+        "displayName": "Rouille (Partie 0)",
+        "canonical": "#b5451d"
+      },
+      "accent-1-cobalt": {
+        "role": "secondary",
+        "displayName": "Cobalt (Partie 1)",
+        "canonical": "#2e5c8a"
+      },
+      "accent-2-vert-bouteille": {
+        "role": "secondary",
+        "displayName": "Vert bouteille (Partie 2)",
+        "canonical": "#2f6b4f"
+      },
+      "accent-3-prune": {
+        "role": "secondary",
+        "displayName": "Prune (Partie 3)",
+        "canonical": "#6b3a5c"
+      },
+      "accent-4-ocre": {
+        "role": "secondary",
+        "displayName": "Ocre assombri (Partie 4)",
+        "canonical": "#8a661c"
+      },
+      "accent-5-petrole": {
+        "role": "secondary",
+        "displayName": "Pétrole (Partie 5)",
+        "canonical": "#1e6b72"
+      },
+      "accent-6-corail": {
+        "role": "secondary",
+        "displayName": "Corail (Partie 6)",
+        "canonical": "#a34b4b"
+      },
+      "accent-7-indigo": {
+        "role": "secondary",
+        "displayName": "Indigo (Partie 7)",
+        "canonical": "#3b3b78"
+      }
     },
     "typographyMeta": {
-      "display": { "displayName": "Display", "purpose": "Titre de couverture de la Partie 0 sur l'accueil." },
-      "headline": { "displayName": "Headline", "purpose": "Titres de Partie et de chapitre." },
-      "body": { "displayName": "Body", "purpose": "Texte de lecture courant, plafonné à 68ch." },
-      "label": { "displayName": "Label", "purpose": "Navigation, statuts, légendes — jamais en kicker." },
-      "mono": { "displayName": "Mono", "purpose": "Blocs de code et clés d'exercice uniquement." }
+      "display": {
+        "displayName": "Display",
+        "purpose": "Titre de couverture de la Partie 0 sur l'accueil."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Titres de Partie et de chapitre."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Texte de lecture courant, plafonné à 68ch."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Navigation, statuts, légendes — jamais en kicker."
+      },
+      "mono": {
+        "displayName": "Mono",
+        "purpose": "Blocs de code et clés d'exercice uniquement."
+      }
     },
     "shadows": [],
     "motion": [
-      { "name": "cover-in", "value": "translateY(0.75rem) → 0, 0.5s cubic-bezier(0.16, 1, 0.3, 1)", "purpose": "Entrée de la couverture d'accueil, depuis un état déjà visible (pas d'opacité 0)." }
+      {
+        "name": "cover-in",
+        "value": "translateY(0.75rem) → 0, 0.5s cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "Entrée de la couverture d'accueil, depuis un état déjà visible (pas d'opacité 0)."
+      }
     ],
     "breakpoints": [
-      { "name": "toc-two-col", "value": "900px" },
-      { "name": "grid-collapse", "value": "960px" },
-      { "name": "mobile", "value": "720px" }
+      {
+        "name": "toc-two-col",
+        "value": "900px"
+      },
+      {
+        "name": "grid-collapse",
+        "value": "960px"
+      },
+      {
+        "name": "mobile",
+        "value": "720px"
+      }
     ]
   },
   "components": [
@@ -86,6 +178,22 @@
       "description": "Bloc de code Ruby avec coloration syntaxique sur fond encre foncée.",
       "html": "<pre class=\"ds-code\"><code><span class=\"ds-code-c\"># app/models/donor.rb</span>\n<span class=\"ds-code-k\">class</span> <span class=\"ds-code-nc\">Donor</span> <span class=\"ds-code-o\">&lt;</span> <span class=\"ds-code-no\">ApplicationRecord</span>\n<span class=\"ds-code-k\">end</span></code></pre>",
       "css": ".ds-code { margin: 0; padding: 0.875rem 1.5rem; overflow-x: auto; background: #1b1710; color: #efe8d8; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; line-height: 1.6; } .ds-code-c { color: #a89f88; font-style: italic; } .ds-code-k { color: #e0a45c; } .ds-code-nc, .ds-code-no { color: #7fb0d9; } .ds-code-o { color: #a89f88; }"
+    },
+    {
+      "name": "Resume Panel",
+      "kind": "custom",
+      "refersTo": "progress-next",
+      "description": "Panneau « Reprendre » sur la page de progression : pointe vers le prochain exercice non fait, contenu réel plutôt que décoratif.",
+      "html": "<div class=\"ds-progress-next\"><p class=\"ds-progress-next__label\">Reprendre</p><p class=\"ds-progress-next__title\">Repérer les 3 dossiers de app/ et dire à quoi chacun sert</p><p class=\"ds-progress-next__meta\">Partie 0 — MVC et convention over configuration</p><a class=\"ds-btn-plain\" href=\"#\">Continuer</a></div>",
+      "css": ".ds-progress-next { border: 1px solid #d8d0ba; padding: 1.5rem; display: flex; flex-direction: column; align-items: flex-start; gap: 0.4em; } .ds-progress-next__label { font-family: 'Source Sans 3', sans-serif; font-size: 0.75rem; letter-spacing: 0.06em; text-transform: uppercase; color: #5b5648; margin: 0; } .ds-progress-next__title { font-family: 'Source Serif 4', Georgia, serif; font-size: 1.25rem; margin: 0; } .ds-progress-next__meta { font-family: 'Source Sans 3', sans-serif; font-size: 0.85rem; color: #5b5648; margin: 0 0 0.4em; }"
+    },
+    {
+      "name": "Part Exercise Overview",
+      "kind": "custom",
+      "refersTo": "issue-exercises",
+      "description": "Liste de tous les exercices d'une Partie, affichée à côté de la liste des chapitres — contenu réel qui remplit la seconde colonne de la page de Partie.",
+      "html": "<div class=\"ds-issue-exercises\"><p class=\"ds-issue-exercises__label\">Exercices de cette partie</p><ul class=\"ds-issue-exercises__list\"><li><span class=\"ds-issue-exercises__key\">0.1</span><a href=\"#\">Installer Rails et générer un projet vide</a></li></ul></div>",
+      "css": ".ds-issue-exercises__label { font-family: 'Source Sans 3', sans-serif; font-size: 0.75rem; letter-spacing: 0.06em; text-transform: uppercase; color: #5b5648; margin: 0 0 0.875rem; } .ds-issue-exercises__list { list-style: none; margin: 0; padding: 0; } .ds-issue-exercises__list li { display: flex; gap: 0.875rem; align-items: baseline; padding: 0.5rem 0; border-top: 1px solid #d8d0ba; } .ds-issue-exercises__key { font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: #5b5648; min-width: 2.2em; } .ds-issue-exercises__list a { font-family: 'Source Serif 4', Georgia, serif; text-decoration: none; color: #17140f; }"
     }
   ],
   "narrative": {
@@ -99,10 +207,26 @@
       "Code affiché sur un panneau encre foncée, jamais sur le papier clair."
     ],
     "rules": [
-      { "name": "The One Accent Rule", "body": "Une seule encre d'accompagnement est active par écran, dérivée du numéro de Partie affiché. Le corps de texte ne porte jamais cette couleur.", "section": "colors" },
-      { "name": "The No Faint Text Rule", "body": "--ink-faint n'est jamais une couleur de texte ; son contraste sur papier (~3.15:1) est sous le seuil de lisibilité 4.5:1.", "section": "colors" },
-      { "name": "The Single Serif Rule", "body": "Une seule famille serif (Source Serif 4) porte titres et corps de texte. Source Sans 3 est réservé à la chrome.", "section": "typography" },
-      { "name": "The Flat-By-Default Rule", "body": "Aucune ombre, aucun flou, aucun effet de verre. Une surface se distingue par sa couleur de fond ou une bordure fine.", "section": "elevation" }
+      {
+        "name": "The One Accent Rule",
+        "body": "Une seule encre d'accompagnement est active par écran, dérivée du numéro de Partie affiché. Le corps de texte ne porte jamais cette couleur.",
+        "section": "colors"
+      },
+      {
+        "name": "The No Faint Text Rule",
+        "body": "--ink-faint n'est jamais une couleur de texte ; son contraste sur papier (~3.15:1) est sous le seuil de lisibilité 4.5:1.",
+        "section": "colors"
+      },
+      {
+        "name": "The Single Serif Rule",
+        "body": "Une seule famille serif (Source Serif 4) porte titres et corps de texte. Source Sans 3 est réservé à la chrome.",
+        "section": "typography"
+      },
+      {
+        "name": "The Flat-By-Default Rule",
+        "body": "Aucune ombre, aucun flou, aucun effet de verre. Une surface se distingue par sa couleur de fond ou une bordure fine.",
+        "section": "elevation"
+      }
     ],
     "dos": [
       "Do dériver la couleur d'accent d'une page de son numéro de Partie, jamais d'une valeur codée en dur.",
@@ -113,7 +237,8 @@
     "donts": [
       "Don't ajouter de kicker ou d'eyebrow au-dessus d'un titre.",
       "Don't utiliser le gabarit « gros chiffre + petit label » (hero-metric) pour afficher une statistique.",
-      "Don't répéter la marque géométrique plus d'une fois par page dans une intention purement décorative.",
+      "Don't faire réapparaître la marque géométrique plus d'une fois par page — un seul rendu, dans le bandeau de Partie/chapitre.",
+      "Don't remplir un espace vide avec de la décoration quand la page n'a pas de second contenu réel à offrir — préférer une seule colonne.",
       "Don't introduire d'ombre portée, de dégradé, de flou décoratif ou de coin arrondi prononcé."
     ]
   }

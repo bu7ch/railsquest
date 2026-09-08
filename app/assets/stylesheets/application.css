@@ -227,9 +227,11 @@ h3 {
 }
 
 .button-plain {
+  display: inline-block;
   font-family: var(--font-nav);
   font-size: 0.82rem;
   letter-spacing: 0.04em;
+  text-decoration: none;
   color: var(--ink);
   background: transparent;
   border: 1px solid var(--ink);
@@ -441,18 +443,49 @@ h3 {
 
 .issue-body {
   display: grid;
-  grid-template-columns: minmax(0, 42rem) 1fr;
+  grid-template-columns: minmax(0, 28rem) 1fr;
   column-gap: var(--space-5);
-  align-items: stretch;
+  align-items: start;
   margin-top: var(--space-4);
 }
 
-.issue-mark-panel {
+.issue-exercises__label {
+  font-family: var(--font-nav);
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-secondary);
+  margin: 0 0 var(--space-2);
+}
+
+.issue-exercises__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.issue-exercises__list li {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 12rem;
-  background: color-mix(in srgb, var(--part-accent, var(--ink)) 10%, transparent);
+  gap: var(--space-2);
+  align-items: baseline;
+  padding: var(--space-1) 0;
+  border-top: 1px solid var(--rule);
+}
+
+.issue-exercises__list li:last-child {
+  border-bottom: 1px solid var(--rule);
+}
+
+.issue-exercises__key {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--ink-secondary);
+  min-width: 2.2em;
+}
+
+.issue-exercises__list a {
+  font-family: var(--font-display);
+  text-decoration: none;
 }
 
 .chapter-list {
@@ -757,34 +790,40 @@ h3 {
 
 .progress-layout {
   display: grid;
-  grid-template-columns: minmax(0, 42rem) 1fr;
+  grid-template-columns: minmax(0, 32rem) 1fr;
   column-gap: var(--space-5);
-  align-items: stretch;
+  align-items: start;
 }
 
-.progress-mark-panel {
+.progress-next {
+  border: 1px solid var(--rule);
+  padding: var(--space-3);
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 0.25em;
-  min-height: 12rem;
-  background: var(--paper-raised);
+  align-items: flex-start;
+  gap: 0.4em;
 }
 
-.progress-mark-panel__figure {
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: clamp(2.75rem, 7vw, 4.5rem);
-  line-height: 1;
-}
-
-.progress-mark-panel__label {
+.progress-next__label {
   font-family: var(--font-nav);
-  font-size: 0.78rem;
+  font-size: 0.75rem;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--ink-secondary);
+  margin: 0;
+}
+
+.progress-next__title {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  margin: 0;
+}
+
+.progress-next__meta {
+  font-family: var(--font-nav);
+  font-size: 0.85rem;
+  color: var(--ink-secondary);
+  margin: 0 0 0.4em;
 }
 
 /* ---------- Responsive ---------- */
@@ -809,10 +848,8 @@ h3 {
     grid-template-columns: 1fr;
   }
 
-  .issue-mark-panel,
-  .progress-mark-panel {
-    order: -1;
-    min-height: 8rem;
+  .issue-exercises {
+    margin-top: var(--space-4);
   }
 }
 
