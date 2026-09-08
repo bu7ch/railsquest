@@ -2,67 +2,59 @@
 title: "Anatomie d'une application générée"
 exercises:
   - key: "0.6"
-    title: "Modifier la page d'accueil par défaut"
+    title: "Observer le rechargement à chaud sur la page À propos"
   - key: "0.7"
-    title: "Comparer les environnements development et test"
+    title: "Comparer le nom de PagesController à ses fichiers de vue"
   - key: "0.8"
-    title: "Lire db/schema.rb après une première migration"
+    title: "Ajouter une page Mentions légales servie depuis public/"
   - key: "0.9"
-    title: "Distinguer app/assets et public/"
-  - key: "0.10"
     title: "Lire le Gemfile et repérer une dépendance"
+  - key: "0.10"
+    title: "Retracer le chemin complet d'une requête vers /about"
 ---
 
 # Anatomie d'une application générée
 
-`rails new` génère une arborescence complète. Voici les dossiers que vous
-utiliserez le plus dans ce cours :
+`rails new` génère une arborescence complète. Vous avez déjà touché
+`app/`, `config/routes.rb` et `Gemfile.lock` en construisant vos deux
+premières pages ; ce chapitre revient sur ce qui les entoure — toujours
+avec le même petit site comme fil conducteur.
 
 - `app/` — le code de l'application (modèles, vues, contrôleurs, jobs,
   mailers...).
 - `config/` — configuration, dont `config/routes.rb` qui définit les URLs
   de l'application.
-- `db/` — les migrations (évolutions du schéma de base de données) et
-  `db/schema.rb` (l'état courant du schéma).
+- `db/` — les migrations et `db/schema.rb`, qui n'entrent en jeu qu'à
+  partir de la partie suivante, une fois un premier modèle créé.
 - `test/` — les tests automatisés, écrits avec Minitest par défaut.
+- `public/` — des fichiers servis tels quels par le serveur, sans passer
+  par un contrôleur ni une vue.
 
-## `config/routes.rb`
+## Le rechargement à chaud
 
-C'est le point d'entrée de toute requête : Rails y cherche quelle
-combinaison contrôleur/action doit traiter une URL donnée.
+`bin/rails server` recharge automatiquement votre code à chaque requête
+en développement — pas besoin de le redémarrer après avoir modifié un
+contrôleur ou une vue. C'est ce qui rend l'aller-retour éditeur/navigateur
+aussi rapide pendant tout ce cours.
 
-```ruby
-Rails.application.routes.draw do
-  root "pages#home"
-end
-```
+## La convention de nommage, sur un cas réel
 
-Ici, une requête sur `/` est dirigée vers l'action `home` de
-`PagesController`.
+Le nom d'un fichier, d'une classe et d'une table suit une règle stricte :
 
-## Le serveur de développement
+| Élément | Forme | Exemple |
+|---|---|---|
+| Fichier contrôleur | snake_case | `app/controllers/pages_controller.rb` |
+| Classe contrôleur | CamelCase | `class PagesController` |
+| Dossier de vues | snake_case, dérivé du contrôleur | `app/views/pages/` |
+| Fichier de vue | nom de l'action | `home.html.erb`, `about.html.erb` |
 
-`bin/rails server` recharge automatiquement votre code à chaque requête en
-développement — pas besoin de redémarrer le serveur après avoir modifié un
-contrôleur ou une vue.
-
-## Les environnements
-
-Une même application Rails tourne dans plusieurs **environnements**, dont
-la configuration diffère : `config/environments/development.rb`,
-`test.rb` et `production.rb`. Le développement recharge le code à chaud et
-affiche des erreurs détaillées ; les tests utilisent une base de données
-séparée (pour ne jamais abîmer vos données de développement) ; la
-production met en cache les assets et masque les détails d'erreur aux
-visiteurs. `Rails.env` indique l'environnement courant à l'exécution.
-
-## `db/schema.rb`
-
-Après la première migration, `db/schema.rb` reflète l'état cumulé de
-toutes les migrations exécutées — c'est le fichier à lire pour connaître
-la structure actuelle de la base, jamais une migration individuelle prise
-isolément (le sujet des migrations est développé en détail dans la partie
-suivante).
+`PagesController` reste pluriel même s'il ne représente aucune collection
+d'enregistrements — c'est la convention Rails pour tout contrôleur,
+qu'il gère une ressource (`DonorsController`, dès la partie suivante) ou
+simplement des pages (`PagesController`, ici). Le dossier de vues,
+`app/views/pages/`, reprend le même nom que le contrôleur sans le
+suffixe `Controller` : c'est cette correspondance de noms, et elle seule,
+qui permet à Rails de retrouver `home.html.erb` sans configuration.
 
 ## `app/assets` et `public/`
 
@@ -70,18 +62,26 @@ Deux dossiers qui semblent proches mais ont un rôle différent :
 
 - `app/assets/` — CSS, images, fonts destinés à être traités par Rails
   (Propshaft calcule un nom de fichier avec empreinte pour la mise en
-  cache navigateur, réécrit les URLs entre feuilles de style, etc.).
-- `public/` — fichiers servis tels quels, sans aucun traitement :
-  `public/robots.txt` ou une page d'erreur statique comme
-  `public/404.html`, par exemple, arrivent au navigateur identiques à
-  ce qu'ils sont sur disque.
+  cache navigateur, par exemple).
+- `public/` — fichiers servis tels quels, sans aucun traitement.
+
+Un fichier posé dans `public/` est immédiatement accessible à l'URL
+correspondant à son nom, sans route, sans contrôleur, sans vue :
+
+```
+public/mentions.html  →  http://localhost:3000/mentions.html
+```
+
+Aucune des trois couches MVC n'intervient ici — ni utile ni souhaitable
+pour un contenu qui ne changera jamais.
 
 ## Le `Gemfile`
 
 `Gemfile` liste les dépendances (les *gems*) du projet ; `Gemfile.lock`,
-généré automatiquement, fige la version exacte de chacune — y compris
-leurs propres dépendances — pour que toute l'équipe (et la production)
-installe rigoureusement les mêmes versions.
+généré automatiquement, fige la version exacte de chacune pour que toute
+l'équipe installe rigoureusement les mêmes versions. Sans la première
+ligne ci-dessous, ni `rails new`, ni `bin/rails server`, ni les deux
+pages construites dans ce chapitre n'existeraient :
 
 ```ruby
 # Gemfile
@@ -89,40 +89,36 @@ gem "rails", "~> 8.0"
 gem "sqlite3", ">= 2.1"
 ```
 
-`bundle install` lit le `Gemfile`, résout les versions compatibles entre
-elles, les installe, et écrit (ou met à jour) `Gemfile.lock`.
-
 ## Exercices
 
-**0.6 — Modifier la page d'accueil par défaut**
+**0.6 — Observer le rechargement à chaud sur la page À propos**
 
-Dans votre projet `donor_crm`, créez un contrôleur `PagesController` avec
-une action `home`, une vue correspondante affichant "Bienvenue sur le CRM
-de dons", et faites pointer `root` vers cette action dans
-`config/routes.rb`. Vérifiez dans le navigateur.
+Serveur toujours lancé, modifiez le texte de `about.html.erb`,
+enregistrez, et rechargez la page dans le navigateur sans redémarrer
+`bin/rails server`. Vérifiez que le nouveau texte apparaît immédiatement.
 
-**0.7 — Comparer les environnements `development` et `test`**
+**0.7 — Comparer le nom de `PagesController` à ses fichiers de vue**
 
-Ouvrez `config/environments/development.rb` et `config/environments/test.rb`
-côte à côte. Notez dans `NOTES.md` deux différences de configuration que
-vous y repérez.
+Dans `NOTES.md`, notez le nom du dossier de vues associé à
+`PagesController`, et pourquoi ce nom précis (pas un autre) est celui que
+Rails va chercher automatiquement pour chaque action.
 
-**0.8 — Lire `db/schema.rb` après une première migration**
+**0.8 — Ajouter une page Mentions légales servie depuis `public/`**
 
-Générez n'importe quel modèle simple (par exemple
-`bin/rails generate model Note content:text`), migrez, puis ouvrez
-`db/schema.rb`. Repérez la table créée et notez la ligne qui enregistre
-le numéro de la dernière migration appliquée.
+Créez `public/mentions.html` avec un court texte, et vérifiez qu'elle est
+accessible sans route ni contrôleur. Dans `NOTES.md`, notez une raison
+pour laquelle la page À propos, elle, doit rester une vraie vue Rails
+plutôt qu'un fichier `public/`.
 
-**0.9 — Distinguer `app/assets` et `public/`**
-
-Ajoutez un fichier `public/hello.txt` contenant du texte, et vérifiez
-qu'il est accessible tel quel à `http://localhost:3000/hello.txt`. Notez
-dans `NOTES.md` pourquoi ce mécanisme ne convient pas pour un fichier CSS
-qu'on veut voir mis en cache intelligemment par le navigateur.
-
-**0.10 — Lire le `Gemfile` et repérer une dépendance**
+**0.9 — Lire le `Gemfile` et repérer une dépendance**
 
 Ouvrez le `Gemfile` de `donor_crm` et repérez la ligne qui déclare la
 dépendance à Rails lui-même. Ouvrez ensuite `Gemfile.lock` et retrouvez
 la version exacte résolue pour cette même gem.
+
+**0.10 — Retracer le chemin complet d'une requête vers `/about`**
+
+Dans `NOTES.md`, écrivez, dans l'ordre, les étapes traversées par une
+requête `GET /about` depuis le navigateur jusqu'à la réponse HTML :
+quel fichier de routes l'intercepte, quelle méthode de quel contrôleur
+elle déclenche, et quel fichier de vue produit finalement la réponse.
