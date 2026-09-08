@@ -30,8 +30,10 @@ partie suivante n'y ajoute de vraies données.
 ## Les trois rôles
 
 - **Modèle** — représente les données et les règles métier (`Donor`,
-  `Campaign`, `Donation`). Un modèle Rails hérite d'`ActiveRecord::Base`
-  et correspond à une table de la base de données.
+  `Campaign`, `Donation`). Un modèle Rails hérite d'`ApplicationRecord`
+  (elle-même une sous-classe d'`ActiveRecord::Base`, générée une fois
+  pour toutes par `rails new`) et correspond à une table de la base de
+  données.
 - **Vue** — ce que l'utilisateur voit : un template `.html.erb` qui mélange
   HTML et Ruby.
 - **Contrôleur** — reçoit une requête HTTP, orchestre modèle(s) et vue,
