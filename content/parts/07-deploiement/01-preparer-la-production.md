@@ -127,13 +127,13 @@ ce genre de route qu'un outil de déploiement interroge en boucle après
 un déploiement, pour décider si la nouvelle version peut recevoir du
 trafic ou si elle doit être annulée.
 
-## Trois bases de données, une par responsabilité
+## Quatre bases de données, une par responsabilité
 
 Rails 8, la version utilisée tout au long de ce cours, configure par
-défaut trois usages distincts de SQLite en production, en plus de la
-base applicative — Solid Cable (partie 5) et Solid Queue (partie 6),
-déjà rencontrés, n'inventent pas de nouvelle base à la volée : ils
-utilisent chacun la leur :
+défaut trois usages internes de SQLite en production, en plus de la
+base applicative principale — Solid Cable (partie 5) et Solid Queue
+(partie 6), déjà rencontrés, n'inventent pas de nouvelle base à la
+volée : ils utilisent chacun la leur :
 
 ```yaml
 # config/database.yml (extrait)
@@ -156,10 +156,15 @@ production:
 ```
 
 `primary` porte `Donor`, `Campaign`, `Donation`, `User`, `Session` —
-tout ce que ce cours a modélisé depuis la partie 1. `cache`, `queue` et
-`cable` isolent le travail interne de Rails (jobs de la partie 6,
-diffusion Turbo de la partie 5) dans des fichiers séparés, pour qu'une
-opération de maintenance sur l'un ne verrouille jamais les autres.
+tout ce que ce cours a modélisé depuis la partie 1. `queue` et `cable`
+isolent respectivement les jobs Active Job (Solid Queue, partie 6) et
+la diffusion Turbo (Solid Cable, partie 5) dans leurs propres fichiers,
+pour qu'une opération de maintenance sur l'un ne verrouille jamais les
+autres. `cache` sert Solid Cache, le cache Rails par défaut
+(`Rails.cache`) — ce cours n'a jamais eu besoin d'y stocker quoi que ce
+soit explicitement, mais Rails 8 le configure d'office avec sa propre
+base, prêt à servir dès qu'un cache de fragment ou de requête en aurait
+besoin.
 
 ## Exercices
 
@@ -197,6 +202,8 @@ la partie 3.
 **7.5 — Vérifier la configuration multi-bases de production**
 
 Ouvrez `config/database.yml` et repérez les quatre entrées (`primary`,
-`cache`, `queue`, `cable`) sous `production:`. Dans `NOTES.md`, associez
-chacune des trois dernières à la partie du cours qui l'a fait
-apparaître pour la première fois (Solid Cable ou Solid Queue).
+`cache`, `queue`, `cable`) sous `production:`. Dans `NOTES.md`,
+associez `queue` et `cable` à la partie du cours qui a fait apparaître
+la fonctionnalité correspondante pour la première fois (Solid Queue ou
+Solid Cable), et écrivez une phrase sur ce à quoi `cache` sert, même si
+ce cours ne l'a jamais utilisé explicitement.

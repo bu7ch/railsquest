@@ -74,7 +74,7 @@ par un fichier commité.
 ## Thruster, devant Puma
 
 ```bash
-# bin/thrust, généré par rails new
+# bin/thrust (extrait), généré par rails new
 exec thrust bin/rails server
 ```
 
