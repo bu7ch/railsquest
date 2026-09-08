@@ -98,13 +98,14 @@ test "deletes a donor with no donations after confirming" do
     click_on "Supprimer"
   end
 
-  assert_no_selector "td", text: "Chloé"
+  assert_no_selector "li", text: "Chloé"
 end
 ```
 
 `assert_no_selector`, symétrique d'`assert_selector`, vérifie qu'un
-élément est absent — la preuve que la ligne a bien disparu, pas
-seulement que la requête de suppression est partie.
+élément est absent — la preuve que la ligne a bien disparu de la liste
+(le `<li>` de `donors/index.html.erb`, partie 2), pas seulement que la
+requête de suppression est partie.
 
 ## Vérifier un refus, jusque dans le navigateur
 
@@ -129,13 +130,13 @@ test "refuses to delete a donor with donations, with an explanation" do
   end
 
   assert_text "suppression impossible"
-  assert_selector "td", text: "Chloé"
+  assert_selector "li", text: "Chloé"
 end
 ```
 
-`assert_selector "td", text: "Chloé"` confirme que la ligne est toujours
-là — le test échouerait si la règle de refus s'était rompue et avait
-laissé passer la suppression.
+`assert_selector "li", text: "Chloé"` confirme que la ligne est
+toujours là dans la liste (partie 2) — le test échouerait si la règle
+de refus s'était rompue et avait laissé passer la suppression.
 
 ## Exercices
 
