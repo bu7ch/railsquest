@@ -6,20 +6,22 @@ exercises:
   - key: "4.7"
     title: "Vérifier le message flash après création"
   - key: "4.8"
-    title: "Lancer la suite complète et lire un échec"
+    title: "Confirmer une suppression acceptée jusque dans le navigateur"
   - key: "4.9"
-    title: "Tester la redirection d'un visiteur non connecté"
+    title: "Vérifier un refus de suppression jusque dans le navigateur"
   - key: "4.10"
-    title: "Vérifier la disparition d'un élément avec assert_no_selector"
+    title: "Casser volontairement un test et lire l'échec"
 ---
 
 # Tests système avec Capybara
 
-Les tests de modèle et de contrôleur vérifient le code ; un test
-**système** vérifie l'expérience réelle : il pilote un vrai navigateur
-(headless, sans fenêtre visible) et interagit avec la page comme le
-ferait une personne — cliquer, remplir un champ, lire ce qui s'affiche.
-Rails les fait tourner avec Capybara, déjà inclus dans le Gemfile généré.
+Les tests de modèle et de contrôleur (chapitre précédent) vérifient le
+code depuis l'intérieur ; un test **système** vérifie l'expérience
+réelle : il pilote un vrai navigateur (headless, sans fenêtre visible) et
+interagit avec la page comme le ferait une personne — cliquer, remplir
+un champ, lire ce qui s'affiche. Ce chapitre reprend le même donateur et
+la même règle de suppression que le chapitre précédent, mais vus depuis
+le navigateur plutôt que depuis le contrôleur.
 
 ## Anatomie d'un test système
 
@@ -72,49 +74,58 @@ test "shows a flash message after creating a donor" do
 end
 ```
 
-## Lire un échec de test système
+## Accepter une boîte de confirmation
 
-Quand un test système échoue, Rails enregistre une capture d'écran dans
-`tmp/screenshots/` au moment précis de l'échec — le réflexe est de
-l'ouvrir avant de relire le code, elle montre souvent immédiatement ce
-qui a réellement été rendu (un formulaire vide, une page d'erreur, un
-label différent de celui attendu).
-
-## Tester une redirection
-
-L'authentification (partie 3) redirige un visiteur non connecté vers la
-page de connexion. Un test système peut vérifier ce comportement de bout
-en bout, sans jamais atteindre la page qu'il protège :
+`turbo_confirm` (partie 2) affiche une boîte de dialogue native avant
+d'envoyer la suppression. Un test système doit explicitement l'accepter
+avec `accept_confirm`, sinon Capybara considère qu'elle reste ouverte et
+que le clic n'a jamais réellement abouti :
 
 ```ruby
-test "redirects an unauthenticated visitor to the login page" do
-  visit donors_path
-
-  assert_current_path new_session_path
-end
-```
-
-`assert_current_path` compare l'URL réellement affichée par le navigateur
-à celle attendue — ici, la preuve que la redirection a bien eu lieu,
-plutôt que de supposer son fonctionnement parce que le code semble
-correct à la lecture.
-
-## Vérifier qu'un élément a disparu
-
-`assert_text`/`assert_selector` vérifient qu'un élément est présent ;
-leur symétrique `assert_no_selector` vérifie son absence — utile pour
-confirmer qu'une action a bien retiré quelque chose de la page.
-
-```ruby
-test "removes the donor row after deletion" do
+test "deletes a donor with no donations after confirming" do
   donor = Donor.create!(name: "Chloé", email: "chloe@example.org")
   visit donor_path(donor)
 
-  click_on "Supprimer"
+  accept_confirm do
+    click_on "Supprimer"
+  end
 
   assert_no_selector "td", text: "Chloé"
 end
 ```
+
+`assert_no_selector`, symétrique d'`assert_selector`, vérifie qu'un
+élément est absent — la preuve que la ligne a bien disparu, pas
+seulement que la requête de suppression est partie.
+
+## Vérifier un refus, jusque dans le navigateur
+
+Le même geste — cliquer sur « Supprimer », accepter la confirmation —
+donne un résultat différent si le donateur a des dons (partie 2). Un
+test système peut vérifier les deux issues avec la même mécanique que le
+test de contrôleur du chapitre précédent, mais en observant ce qu'une
+personne verrait réellement :
+
+```ruby
+test "refuses to delete a donor with donations, with an explanation" do
+  donor = Donor.create!(name: "Chloé", email: "chloe@example.org")
+  campaign = Campaign.create!(name: "Collecte hiver", goal_cents: 100_000)
+  donor.donations.create!(campaign: campaign, amount_cents: 2_000)
+
+  visit donor_path(donor)
+
+  accept_confirm do
+    click_on "Supprimer"
+  end
+
+  assert_text "suppression impossible"
+  assert_selector "td", text: "Chloé"
+end
+```
+
+`assert_selector "td", text: "Chloé"` confirme que la ligne est toujours
+là — le test échouerait si la règle de refus s'était rompue et avait
+laissé passer la suppression.
 
 ## Exercices
 
@@ -130,22 +141,23 @@ Ajoutez une assertion sur le texte du message flash affiché après
 création (adaptez le texte exact au message que renvoie votre action
 `create`).
 
-**4.8 — Lancer la suite complète et lire un échec**
+**4.8 — Confirmer une suppression acceptée jusque dans le navigateur**
 
-Cassez temporairement un test (changez une assertion pour qu'elle
-échoue exprès), lancez `bin/rails test`, lisez le message d'échec produit
-par Minitest, puis rétablissez le test. Faites de même pour un test
-système et ouvrez la capture d'écran générée dans `tmp/screenshots/`
-avant de corriger.
+Écrivez le test de suppression ci-dessus pour un donateur sans don :
+`accept_confirm` autour du clic, puis `assert_no_selector` pour vérifier
+sa disparition.
 
-**4.9 — Tester la redirection d'un visiteur non connecté**
+**4.9 — Vérifier un refus de suppression jusque dans le navigateur**
 
-En supposant l'authentification de la partie 3 déjà en place, écrivez un
-test système qui visite `/donors` sans être connecté et vérifie, avec
-`assert_current_path`, l'arrivée sur la page de connexion.
+Écrivez le second test ci-dessus pour un donateur ayant un don associé :
+vérifiez à la fois le message d'explication et la présence persistante
+de la ligne du donateur.
 
-**4.10 — Vérifier la disparition d'un élément avec `assert_no_selector`**
+**4.10 — Casser volontairement un test et lire l'échec**
 
-Écrivez un test système qui crée un donateur, visite sa fiche, clique sur
-« Supprimer », et vérifie avec `assert_no_selector` que son nom
-n'apparaît plus dans la liste des donateurs.
+Lancez `bin/rails test && PARALLEL_WORKERS=1 bin/rails test:system` :
+toute la suite écrite dans cette partie doit passer. Modifiez ensuite
+exprès l'assertion de l'exercice 4.9 pour qu'elle échoue (par exemple, en
+attendant un texte qui n'apparaît jamais), relancez, et lisez le message
+produit par Minitest ainsi que la capture d'écran générée dans
+`tmp/screenshots/`. Rétablissez l'assertion correcte avant de continuer.

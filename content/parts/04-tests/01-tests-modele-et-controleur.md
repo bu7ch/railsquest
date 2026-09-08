@@ -10,7 +10,7 @@ exercises:
   - key: "4.4"
     title: "Préparer des données de test avec une fixture"
   - key: "4.5"
-    title: "Tester une méthode métier du modèle Campaign"
+    title: "Tester le refus de suppression d'un donateur ayant des dons"
 ---
 
 # Tests de modèle et de contrôleur
@@ -140,7 +140,41 @@ nommée `alice` — déjà présent en base avant même que le test ne
 commence, sans ligne de `create!` à écrire. Les fixtures conviennent
 bien aux données de référence stables ; `create!` en cours de test reste
 préférable dès qu'un test a besoin d'une donnée spécifique à son propre
-scénario.
+scénario — comme dans le prochain test, qui a justement besoin d'un
+donateur dans un état précis.
+
+## Tester une règle métier au niveau du contrôleur
+
+La partie précédente a ajouté une règle à `destroy` : un donateur qui a
+des dons associés ne peut pas être supprimé. Une règle métier mérite un
+test pour chacun de ses deux verdicts, exactement comme les deux chemins
+de `create` plus haut.
+
+```ruby
+test "destroy refuses to delete a donor with donations" do
+  donor = Donor.create!(name: "Chloé", email: "chloe@example.org")
+  campaign = Campaign.create!(name: "Collecte hiver", goal_cents: 100_000)
+  donor.donations.create!(campaign: campaign, amount_cents: 2_000)
+
+  assert_no_difference "Donor.count" do
+    delete donor_path(donor)
+  end
+
+  assert_redirected_to donor_path(donor)
+end
+
+test "destroy deletes a donor with no donations" do
+  donor = Donor.create!(name: "Chloé", email: "chloe@example.org")
+
+  assert_difference "Donor.count", -1 do
+    delete donor_path(donor)
+  end
+end
+```
+
+Les deux tests partagent la même action et le même modèle, mais préparent
+un état de départ différent — la seule chose qui distingue les deux
+issues possibles de `destroy`.
 
 ## Exercices
 
@@ -169,8 +203,10 @@ Créez `test/fixtures/donors.yml` avec deux donateurs nommés. Réécrivez le
 test de l'exercice 4.2 pour utiliser `donors(:alice)` et `donors(:bob)`
 plutôt que des `Donor.create!` explicites.
 
-**4.5 — Tester une méthode métier du modèle `Campaign`**
+**4.5 — Tester le refus de suppression d'un donateur ayant des dons**
 
-Reprenez `total_collected_cents` (partie 1). Écrivez un test qui crée une
-campagne, lui associe plusieurs dons de montants différents, et vérifie
-que la méthode renvoie bien leur somme exacte.
+Écrivez les deux tests ci-dessus pour votre propre `DonorsController` :
+un donateur avec un don ne doit pas pouvoir être supprimé
+(`assert_no_difference`), un donateur sans don doit l'être normalement
+(`assert_difference`). Lancez le fichier complet et vérifiez que tous les
+tests passent, y compris ceux des exercices précédents.
