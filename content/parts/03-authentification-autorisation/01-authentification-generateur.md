@@ -128,6 +128,70 @@ Un visiteur non connecté qui tente d'accéder à `/donors` est redirigé
 vers la page de connexion, avec l'URL demandée mémorisée pour y revenir
 juste après.
 
+## Rouvrir ce qui doit rester public
+
+Ce nouveau réglage par défaut protège aussi `CampaignsController`, alors
+que sa page (partie 2) a été construite précisément pour être partagée
+publiquement par l'association, sans compte. Il faut l'exempter
+explicitement — le même mécanisme que celui utilisé par
+`SessionsController` généré plus haut :
+
+```ruby
+# app/controllers/campaigns_controller.rb
+class CampaignsController < ApplicationController
+  allow_unauthenticated_access only: %i[index show]
+
+  def index
+    @campaigns = Campaign.all
+  end
+
+  def show
+    @campaign = Campaign.find(params[:id])
+  end
+end
+```
+
+`DonorsController`, lui, ne déclare rien de tel : il reste couvert par le
+comportement par défaut, exactement comme l'exemple ci-dessus.
+
+## S'authentifier dans les tests
+
+Le générateur ajoute aussi `test/test_helpers/session_test_helper.rb`,
+avec une méthode `sign_in_as(user)` déjà incluse dans
+`ActionDispatch::IntegrationTest`. À partir de maintenant, tout test de
+contrôleur ou système qui touche une page protégée doit d'abord
+l'appeler — sans quoi il se heurtera à la même redirection vers la page
+de connexion qu'un visiteur non identifié :
+
+```ruby
+test "an authenticated staff member can see the donors list" do
+  sign_in_as(users(:staff))
+
+  get donors_path
+
+  assert_response :success
+end
+```
+
+Pour un test système, qui pilote un vrai navigateur, l'équivalent
+n'existe pas encore : il faut l'écrire une fois, dans
+`test/application_system_test_case.rb`, pour que tous les tests système
+puissent ensuite l'appeler exactement comme `sign_in_as` ci-dessus.
+
+```ruby
+# test/application_system_test_case.rb
+class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
+  driven_by :selenium, using: :headless_chrome, screen_size: [ 1400, 1400 ]
+
+  def sign_in_as(user)
+    visit new_session_path
+    fill_in "Email", with: user.email_address
+    fill_in "Mot de passe", with: "password"
+    click_on "Se connecter"
+  end
+end
+```
+
 ## Exercices
 
 **3.1 — Lancer le générateur d'authentification et migrer la base**
@@ -154,9 +218,10 @@ disparaît après déconnexion (outils de développement du navigateur).
 **3.4 — Protéger `DonorsController` avec `require_authentication`**
 
 Vérifiez qu'un visiteur non connecté qui tente `/donors` est bien
-redirigé vers la page de connexion. Si votre contrôleur utilisait
-`allow_unauthenticated_access` par erreur (copié depuis un autre
-contrôleur), retirez-le.
+redirigé vers la page de connexion. Ajoutez ensuite
+`allow_unauthenticated_access only: %i[index show]` à
+`CampaignsController` et vérifiez, à l'inverse, que sa page reste
+accessible sans être connecté.
 
 **3.5 — Personnaliser le message de redirection**
 

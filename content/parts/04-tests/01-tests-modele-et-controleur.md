@@ -54,6 +54,37 @@ bin/rails test test/models/donor_test.rb
 `donor.errors[:name]` liste les messages d'erreur associés à cet
 attribut précis après un `valid?` qui a échoué.
 
+## S'authentifier avant d'atteindre un contrôleur
+
+Depuis la partie 3, `DonorsController` exige une session valide : un
+test de contrôleur qui l'atteint sans s'identifier d'abord se heurtera à
+la même redirection qu'un visiteur non connecté. `sign_in_as` (généré
+avec l'authentification) s'utilise directement dans un test, à condition
+d'avoir un utilisateur pour l'invoquer — une fixture s'en charge une
+bonne fois pour toutes :
+
+```yaml
+# test/fixtures/users.yml
+staff:
+  email_address: staff@association.org
+  password_digest: <%= BCrypt::Password.create("password") %>
+```
+
+```ruby
+test "an authenticated staff member can reach the donors list" do
+  sign_in_as(users(:staff))
+
+  get donors_path
+
+  assert_response :success
+end
+```
+
+`password_digest` ne peut pas être écrit en clair dans une fixture (ce
+serait le mot de passe non hashé) : `BCrypt::Password.create` produit le
+même hash que `has_secure_password` aurait calculé à la création réelle
+du compte.
+
 ## Tester un contrôleur
 
 Un test de contrôleur (en réalité un test d'intégration léger dans
@@ -66,6 +97,7 @@ require "test_helper"
 
 class DonorsControllerTest < ActionDispatch::IntegrationTest
   test "index lists donors" do
+    sign_in_as(users(:staff))
     Donor.create!(name: "Alice", email: "alice@example.org")
 
     get donors_path
@@ -89,6 +121,8 @@ chemin — sinon la moitié de son comportement n'est jamais vérifiée.
 
 ```ruby
 test "create succeeds with valid params" do
+  sign_in_as(users(:staff))
+
   assert_difference "Donor.count", 1 do
     post donors_path, params: { donor: { name: "Bob", email: "bob@example.org" } }
   end
@@ -97,6 +131,8 @@ test "create succeeds with valid params" do
 end
 
 test "create fails with invalid params" do
+  sign_in_as(users(:staff))
+
   assert_no_difference "Donor.count" do
     post donors_path, params: { donor: { name: "" } }
   end
@@ -129,6 +165,8 @@ bob:
 
 ```ruby
 test "index lists fixture donors" do
+  sign_in_as(users(:staff))
+
   get donors_path
 
   assert_select "body", /#{donors(:alice).name}/
@@ -152,6 +190,8 @@ de `create` plus haut.
 
 ```ruby
 test "destroy refuses to delete a donor with donations" do
+  users(:staff).admin!
+  sign_in_as(users(:staff))
   donor = Donor.create!(name: "Chloé", email: "chloe@example.org")
   campaign = Campaign.create!(name: "Collecte hiver", goal_cents: 100_000)
   donor.donations.create!(campaign: campaign, amount_cents: 2_000)
@@ -164,6 +204,8 @@ test "destroy refuses to delete a donor with donations" do
 end
 
 test "destroy deletes a donor with no donations" do
+  users(:staff).admin!
+  sign_in_as(users(:staff))
   donor = Donor.create!(name: "Chloé", email: "chloe@example.org")
 
   assert_difference "Donor.count", -1 do
@@ -174,7 +216,11 @@ end
 
 Les deux tests partagent la même action et le même modèle, mais préparent
 un état de départ différent — la seule chose qui distingue les deux
-issues possibles de `destroy`.
+issues possibles de `destroy`. `users(:staff).admin!` bascule le rôle
+juste pour ce test, sans toucher à la fixture elle-même ni aux autres
+tests du fichier : `destroy` est réservé aux admins depuis la partie 3,
+la règle sur les dons ne pouvant se vérifier qu'une fois cette première
+porte franchie.
 
 ## Exercices
 
@@ -187,9 +233,10 @@ Dans `test/models/donor_test.rb`, écrivez un test qui vérifie qu'un
 
 **4.2 — Tester l'action `index` de `DonorsController`**
 
-Créez deux donateurs depuis le test, appelez `get donors_path`, et
-vérifiez que les deux noms apparaissent dans la réponse avec
-`assert_select`.
+Créez la fixture `test/fixtures/users.yml` ci-dessus. Dans votre test,
+appelez `sign_in_as(users(:staff))`, créez deux donateurs, appelez
+`get donors_path`, et vérifiez que les deux noms apparaissent dans la
+réponse avec `assert_select`.
 
 **4.3 — Tester les deux chemins de l'action `create`**
 
@@ -205,8 +252,9 @@ plutôt que des `Donor.create!` explicites.
 
 **4.5 — Tester le refus de suppression d'un donateur ayant des dons**
 
-Écrivez les deux tests ci-dessus pour votre propre `DonorsController` :
-un donateur avec un don ne doit pas pouvoir être supprimé
-(`assert_no_difference`), un donateur sans don doit l'être normalement
-(`assert_difference`). Lancez le fichier complet et vérifiez que tous les
-tests passent, y compris ceux des exercices précédents.
+Écrivez les deux tests ci-dessus pour votre propre `DonorsController`,
+en basculant `users(:staff)` en admin puisque `destroy` leur est réservé
+depuis la partie 3 : un donateur avec un don ne doit pas pouvoir être
+supprimé (`assert_no_difference`), un donateur sans don doit l'être
+normalement (`assert_difference`). Lancez le fichier complet et vérifiez
+que tous les tests passent, y compris ceux des exercices précédents.

@@ -31,6 +31,7 @@ require "application_system_test_case"
 
 class DonorsTest < ApplicationSystemTestCase
   test "creating a donor from the browser" do
+    sign_in_as(users(:staff))
     visit new_donor_path
 
     fill_in "Nom", with: "Chloé"
@@ -42,11 +43,15 @@ class DonorsTest < ApplicationSystemTestCase
 end
 ```
 
-`visit` charge une page réelle ; `fill_in "Nom", with:` cherche un champ
-associé au label « Nom » et y tape le texte ; `click_on` clique un lien
-ou un bouton par son texte visible. Capybara attend automatiquement
-qu'un élément apparaisse avant d'agir dessus — pas besoin d'ajouter des
-pauses artificielles pour laisser la page se charger.
+`sign_in_as` (partie 3, ajoutée à `ApplicationSystemTestCase`) se
+connecte réellement avant toute autre chose — `DonorsController` exige
+une session depuis la partie 3, un test système n'y échappe pas plus
+qu'un visiteur. `visit` charge ensuite une page réelle ; `fill_in "Nom",
+with:` cherche un champ associé au label « Nom » et y tape le texte ;
+`click_on` clique un lien ou un bouton par son texte visible. Capybara
+attend automatiquement qu'un élément apparaisse avant d'agir dessus —
+pas besoin d'ajouter des pauses artificielles pour laisser la page se
+charger.
 
 ```bash
 PARALLEL_WORKERS=1 bin/rails test:system
@@ -64,6 +69,7 @@ l'écran après une action — texte, message flash, disparition d'un
 
 ```ruby
 test "shows a flash message after creating a donor" do
+  sign_in_as(users(:staff))
   visit new_donor_path
 
   fill_in "Nom", with: "Chloé"
@@ -83,6 +89,8 @@ que le clic n'a jamais réellement abouti :
 
 ```ruby
 test "deletes a donor with no donations after confirming" do
+  users(:staff).admin!
+  sign_in_as(users(:staff))
   donor = Donor.create!(name: "Chloé", email: "chloe@example.org")
   visit donor_path(donor)
 
@@ -108,6 +116,8 @@ personne verrait réellement :
 
 ```ruby
 test "refuses to delete a donor with donations, with an explanation" do
+  users(:staff).admin!
+  sign_in_as(users(:staff))
   donor = Donor.create!(name: "Chloé", email: "chloe@example.org")
   campaign = Campaign.create!(name: "Collecte hiver", goal_cents: 100_000)
   donor.donations.create!(campaign: campaign, amount_cents: 2_000)
@@ -131,9 +141,10 @@ laissé passer la suppression.
 
 **4.6 — Écrire un test système pour la création d'un donateur**
 
-Dans `test/system/donors_test.rb` de votre `donor_crm`, écrivez le test
-ci-dessus adapté aux labels réels de votre formulaire. Lancez-le avec
-`PARALLEL_WORKERS=1 bin/rails test:system`.
+Ajoutez la méthode `sign_in_as` à `test/application_system_test_case.rb`
+comme ci-dessus. Dans `test/system/donors_test.rb` de votre `donor_crm`,
+écrivez le test ci-dessus adapté aux labels réels de votre formulaire.
+Lancez-le avec `PARALLEL_WORKERS=1 bin/rails test:system`.
 
 **4.7 — Vérifier le message flash après création**
 
@@ -144,8 +155,8 @@ création (adaptez le texte exact au message que renvoie votre action
 **4.8 — Confirmer une suppression acceptée jusque dans le navigateur**
 
 Écrivez le test de suppression ci-dessus pour un donateur sans don :
-`accept_confirm` autour du clic, puis `assert_no_selector` pour vérifier
-sa disparition.
+basculez `users(:staff)` en admin, connectez-vous, `accept_confirm`
+autour du clic, puis `assert_no_selector` pour vérifier sa disparition.
 
 **4.9 — Vérifier un refus de suppression jusque dans le navigateur**
 

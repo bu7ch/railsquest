@@ -68,8 +68,13 @@ class DonorsController < ApplicationController
   before_action :require_admin, only: :destroy
 
   def destroy
-    Donor.find(params[:id]).destroy
-    redirect_to donors_path, notice: "Donateur supprimé."
+    @donor = Donor.find(params[:id])
+    if @donor.donations.any?
+      redirect_to @donor, alert: "Ce donateur a des dons enregistrés : suppression impossible."
+    else
+      @donor.destroy
+      redirect_to donors_path, notice: "Donateur supprimé."
+    end
   end
 
   private
@@ -84,7 +89,12 @@ end
 
 `Current.user` (fourni par le concern `Authentication` du chapitre
 précédent) est déjà disponible ici : l'authentification a eu lieu avant
-l'autorisation, dans l'ordre des `before_action`.
+l'autorisation, dans l'ordre des `before_action`. Le corps de `destroy`
+garde intacte la règle de la partie 2 (un donateur avec des dons ne se
+supprime pas) : `before_action :require_admin` répond à « qui a le
+droit d'essayer », le `if @donor.donations.any?` répond à « dans quel
+état l'essai réussit » — deux questions différentes, deux emplacements
+différents, jamais l'une à la place de l'autre.
 
 ## Adapter l'interface à ce qu'on a le droit de faire
 
@@ -111,9 +121,10 @@ est bien `fundraiser?`, et qu'appeler `user.admin!` bascule son rôle.
 **3.7 — Restreindre la suppression d'un donateur aux admins**
 
 Ajoutez `before_action :require_admin, only: :destroy` à
-`DonorsController` avec la méthode `require_admin` ci-dessus. Vérifiez
-manuellement (deux comptes, l'un admin, l'autre fundraiser) que seul le
-premier peut supprimer un donateur.
+`DonorsController`, sans retirer le `if @donor.donations.any?` de la
+partie 2. Vérifiez manuellement, avec deux comptes (un admin, un
+fundraiser), que seul l'admin peut tenter une suppression — et que même
+lui se voit refuser la suppression d'un donateur qui a des dons.
 
 **3.8 — Masquer le bouton de suppression pour les non-admins**
 

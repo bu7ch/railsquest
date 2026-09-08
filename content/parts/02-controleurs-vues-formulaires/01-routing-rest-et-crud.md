@@ -36,7 +36,7 @@ qu'un exemple jetable.
 ```ruby
 class DonorsController < ApplicationController
   def index
-    @donors = Donor.all
+    @donors = Donor.recent
   end
 
   def show
@@ -80,6 +80,9 @@ end
 `donor_params` illustre les **strong parameters** : Rails refuse par
 défaut d'assigner en masse des attributs non explicitement autorisés,
 pour éviter qu'un client malveillant n'écrive des colonnes non prévues.
+`Donor.recent` réutilise directement le scope écrit en partie 1 : la
+liste des donateurs s'affiche désormais du plus récent au plus ancien,
+sans qu'aucune requête n'ait eu besoin d'être réécrite ici.
 
 ## Relier les pages entre elles
 

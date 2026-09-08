@@ -170,7 +170,9 @@ donateurs avec le même email échoue au deuxième essai.
 
 Ajoutez le scope `recent` ci-dessus. Créez trois donateurs à quelques
 secondes d'intervalle depuis la console et vérifiez que
-`Donor.recent.first` renvoie bien le dernier créé.
+`Donor.recent.first` renvoie bien le dernier créé. Gardez ce scope sous
+la main : la partie suivante, une fois la page `index` construite,
+l'utilisera pour trier vraiment la liste affichée.
 
 **1.5 — Ajouter une colonne dans une nouvelle migration**
 
