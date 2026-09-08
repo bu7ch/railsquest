@@ -39,3 +39,12 @@
 /.impeccable/build/
 /.impeccable/questions/
 /.impeccable/hook.cache.json
+
+# OS and editor cruft.
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
