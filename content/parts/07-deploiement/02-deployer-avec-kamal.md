@@ -4,7 +4,7 @@ exercises:
   - key: "7.6"
     title: "Lire et annoter config/deploy.yml"
   - key: "7.7"
-    title: "Déclarer un secret de déploiement sans le committer"
+    title: "Vérifier que .kamal/secrets ne contient aucune valeur en clair"
   - key: "7.8"
     title: "Comprendre le rôle de Thruster devant Puma"
   - key: "7.9"
@@ -65,11 +65,13 @@ KAMAL_REGISTRY_PASSWORD=$(cat ~/.docker-registry-password)
 RAILS_MASTER_KEY=$(cat config/master.key)
 ```
 
-`.kamal/secrets` est exclu de Git par le `.gitignore` généré avec le
-projet, pour la même raison que `config/master.key` (chapitre
-précédent) : Kamal lit ce fichier au moment du déploiement pour
-injecter ces valeurs dans le conteneur, sans jamais les faire transiter
-par un fichier commité.
+Contrairement à `config/master.key` (chapitre précédent), `.kamal/secrets`
+est fait pour être commité : il ne contient jamais une vraie valeur,
+seulement des indirections (`$(cat ...)`, une variable d'environnement,
+un appel à un gestionnaire de mots de passe) que Kamal résout au moment
+du déploiement. Le vrai secret, lui, ne transite jamais par un fichier
+versionné : `config/master.key` reste sur le poste de développement et
+sur le serveur, jamais dans Git.
 
 ## Thruster, devant Puma
 
@@ -116,11 +118,13 @@ Ouvrez `config/deploy.yml` de `donor_crm`. Dans `NOTES.md` (partie 0),
 pour chacune des sections `service`, `image`, `servers`, `proxy` et
 `registry`, écrivez une phrase expliquant son rôle dans un déploiement.
 
-**7.7 — Déclarer un secret de déploiement sans le committer**
+**7.7 — Vérifier que .kamal/secrets ne contient aucune valeur en clair**
 
-Créez ou complétez `.kamal/secrets` comme ci-dessus. Vérifiez que ce
-fichier n'apparaît jamais dans `git status` en tant que fichier suivi,
-et notez dans `NOTES.md` où `.gitignore` l'exclut.
+Créez ou complétez `.kamal/secrets` comme ci-dessus. Relisez chaque
+ligne et vérifiez qu'aucune ne contient de valeur en clair — uniquement
+des indirections (`$(cat ...)`, une variable d'environnement). Ce
+fichier peut être commité sans risque ; dans `NOTES.md`, expliquez
+pourquoi `config/master.key`, lui, ne le pourrait jamais.
 
 **7.8 — Comprendre le rôle de Thruster devant Puma**
 
