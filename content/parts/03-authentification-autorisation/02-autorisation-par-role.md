@@ -106,9 +106,14 @@ contrôleur).
 ```erb
 <%# app/views/donors/show.html.erb %>
 <% if Current.user.admin? %>
-  <%= button_to "Supprimer", @donor, method: :delete %>
+  <%= button_to "Supprimer", @donor, method: :delete,
+        data: { turbo_confirm: "Confirmer la suppression de ce donateur ?" } %>
 <% end %>
 ```
+
+`if Current.user.admin?` entoure le bouton existant sans en retirer le
+`data: { turbo_confirm: ... }` de la partie 2 : les deux protections se
+cumulent, l'une n'a jamais remplacé l'autre.
 
 ## Exercices
 
