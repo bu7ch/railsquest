@@ -99,12 +99,15 @@ class ContentLoaderTest < ActiveSupport::TestCase
     assert coming_soon.all? { |p| p.chapters.empty? }
   end
 
-  test "part 0 is written with 2 chapters and 3 exercises" do
+  test "part 0 is written with 2 chapters and 10 exercises" do
     part0 = ContentLoader.parts.find { |p| p.number == 0 }
 
     assert_equal "written", part0.status
     assert_equal 2, part0.chapters.size
-    assert_equal [ "0.1", "0.2", "0.3" ], part0.exercises.map(&:key)
+    assert_equal(
+      [ "0.1", "0.2", "0.3", "0.4", "0.5", "0.6", "0.7", "0.8", "0.9", "0.10" ],
+      part0.exercises.map(&:key)
+    )
   end
 
   test "part 1 is written with 2 chapters and 10 exercises" do
@@ -118,12 +121,15 @@ class ContentLoaderTest < ActiveSupport::TestCase
     )
   end
 
-  test "part 2 is written with 2 chapters and 3 exercises" do
+  test "part 2 is written with 2 chapters and 10 exercises" do
     part2 = ContentLoader.parts.find { |p| p.number == 2 }
 
     assert_equal "written", part2.status
     assert_equal 2, part2.chapters.size
-    assert_equal [ "2.1", "2.2", "2.3" ], part2.exercises.map(&:key)
+    assert_equal(
+      [ "2.1", "2.2", "2.3", "2.4", "2.5", "2.6", "2.7", "2.8", "2.9", "2.10" ],
+      part2.exercises.map(&:key)
+    )
   end
 
   test "part 3 is written with 2 chapters and 10 exercises" do
@@ -137,21 +143,21 @@ class ContentLoaderTest < ActiveSupport::TestCase
     )
   end
 
-  test "part 4 is written with 2 chapters and 6 exercises" do
+  test "part 4 is written with 2 chapters and 10 exercises" do
     part4 = ContentLoader.parts.find { |p| p.number == 4 }
 
     assert_equal "written", part4.status
     assert_equal 2, part4.chapters.size
     assert_equal(
-      [ "4.1", "4.2", "4.3", "4.4", "4.5", "4.6" ],
+      [ "4.1", "4.2", "4.3", "4.4", "4.5", "4.6", "4.7", "4.8", "4.9", "4.10" ],
       part4.exercises.map(&:key)
     )
   end
 
-  test "all written parts together expose 32 exercises with globally unique keys" do
+  test "all written parts together expose 50 exercises with globally unique keys" do
     all_keys = ContentLoader.parts.flat_map(&:exercises).map(&:key)
 
-    assert_equal 32, all_keys.size
+    assert_equal 50, all_keys.size
     assert_equal all_keys, all_keys.uniq
   end
 end

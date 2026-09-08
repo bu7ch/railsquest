@@ -5,6 +5,12 @@ exercises:
     title: "Installer Rails et générer un projet vide"
   - key: "0.2"
     title: "Repérer les 3 dossiers de app/ et dire à quoi chacun sert"
+  - key: "0.3"
+    title: "Lister les routes avec bin/rails routes"
+  - key: "0.4"
+    title: "Ajouter une seconde page statique avec son propre contrôleur"
+  - key: "0.5"
+    title: "Repérer la convention singulier/pluriel entre fichier, classe et table"
 ---
 
 # MVC et convention over configuration
@@ -75,6 +81,41 @@ bin/rails server
 `bin/rails server` démarre un serveur de développement sur
 `http://localhost:3000`.
 
+## Lister les routes
+
+Avant même d'écrire un contrôleur, on peut toujours demander à Rails
+quelles routes existent déjà dans l'application :
+
+```bash
+bin/rails routes
+```
+
+Chaque ligne affiche un nom de route, un verbe HTTP, un chemin, et le
+contrôleur/action qui la traite. Sur un projet fraîchement généré, cette
+commande n'affiche que la route technique `/up` (vérification de santé) —
+elle s'enrichira au fil du cours à mesure qu'on ajoute des `resources` et
+des `root` dans `config/routes.rb`. C'est le premier réflexe utile quand
+on ne sait plus quelle URL mène à quelle action.
+
+## Convention de nommage
+
+Le nom d'un fichier, d'une classe et d'une table suit une règle stricte,
+et c'est cette règle — pas une configuration — qui les relie entre eux :
+
+| Élément | Forme | Exemple |
+|---|---|---|
+| Fichier modèle | singulier, snake_case | `app/models/donor.rb` |
+| Classe modèle | singulier, CamelCase | `class Donor` |
+| Table en base | pluriel, snake_case | `donors` |
+| Fichier contrôleur | pluriel, snake_case | `app/controllers/donors_controller.rb` |
+| Classe contrôleur | pluriel, CamelCase | `class DonorsController` |
+
+Un modèle reste toujours singulier (un `Donor` est une personne), tandis
+qu'un contrôleur reste toujours pluriel (`DonorsController` orchestre la
+collection des donateurs). Rails utilise la gem `ActiveSupport::Inflector`
+pour passer de l'un à l'autre — c'est elle qui sait que le pluriel de
+`donor` est `donors`, ou que celui de `campaign` est `campaigns`.
+
 ## Exercices
 
 **0.1 — Installer Rails et générer un projet vide**
@@ -87,3 +128,23 @@ vérifiez que la page d'accueil par défaut s'affiche dans votre navigateur.
 Ouvrez `app/models`, `app/views` et `app/controllers` dans le projet
 généré. Pour chacun, écrivez une phrase expliquant à quoi il sert, dans un
 fichier `NOTES.md` à la racine du projet.
+
+**0.3 — Lister les routes avec `bin/rails routes`**
+
+Dans `donor_crm`, lancez `bin/rails routes` et notez dans `NOTES.md` la
+seule route qui apparaît sur un projet fraîchement généré, et ce à quoi
+elle sert.
+
+**0.4 — Ajouter une seconde page statique avec son propre contrôleur**
+
+Générez un `AboutController` avec une action `index` affichant une courte
+présentation de l'association, ajoutez la route correspondante dans
+`config/routes.rb`, et vérifiez que `bin/rails routes` affiche
+désormais cette nouvelle route en plus de celle de l'exercice précédent.
+
+**0.5 — Repérer la convention singulier/pluriel**
+
+Dans votre `AboutController`, notez si son nom est singulier ou pluriel,
+et pourquoi (il ne représente pas une collection d'enregistrements comme
+`DonorsController` le ferait pour des donateurs). Écrivez la règle dans
+`NOTES.md` avec vos propres mots.

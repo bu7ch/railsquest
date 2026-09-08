@@ -1,8 +1,16 @@
 ---
 title: "Formulaires, partials et flash"
 exercises:
-  - key: "2.3"
+  - key: "2.6"
     title: "Factoriser le formulaire de Donor en partial"
+  - key: "2.7"
+    title: "Ajouter un champ supplémentaire au formulaire"
+  - key: "2.8"
+    title: "Afficher les erreurs de validation dans le formulaire"
+  - key: "2.9"
+    title: "Ajouter un flash d'alerte distinct du notice"
+  - key: "2.10"
+    title: "Confirmer une suppression avec turbo_confirm"
 ---
 
 # Formulaires, partials et flash
@@ -55,6 +63,32 @@ le formulaire. On factorise avec un partial `_form.html.erb` :
 <%= render "form", donor: @donor %>
 ```
 
+## Afficher les erreurs de validation
+
+Quand `@donor.save` échoue, `@donor.errors` contient le détail des
+validations non satisfaites — encore faut-il l'afficher dans le
+formulaire plutôt que de laisser l'utilisateur deviner ce qui cloche :
+
+```erb
+<%# app/views/donors/_form.html.erb %>
+<% if donor.errors.any? %>
+  <ul class="form-errors">
+    <% donor.errors.full_messages.each do |message| %>
+      <li><%= message %></li>
+    <% end %>
+  </ul>
+<% end %>
+
+<%= form_with model: donor do |f| %>
+  <%= f.label :name %>
+  <%= f.text_field :name %>
+  ...
+```
+
+`errors.full_messages` traduit chaque erreur en une phrase lisible
+(« Name can't be blank ») plutôt qu'en paires attribut/type d'erreur
+brutes.
+
 ## Flash messages
 
 `redirect_to @donor, notice: "Donateur créé."` stocke le message dans
@@ -66,13 +100,62 @@ l'afficher dans le layout :
 <% if notice %>
   <p class="flash-notice"><%= notice %></p>
 <% end %>
+<% if alert %>
+  <p class="flash-alert"><%= alert %></p>
+<% end %>
 ```
+
+`notice` et `alert` sont deux clés de `flash` traitées différemment par
+convention : la première pour une confirmation, la seconde pour un
+avertissement ou une erreur — deux couleurs, deux tons, jamais confondus
+dans l'interface.
+
+```ruby
+redirect_to donors_path, alert: "Ce donateur est déjà associé à des dons."
+```
+
+## Confirmer une action destructive
+
+Une suppression est irréversible : un clic malheureux ne doit pas
+suffire à déclencher.
+
+```erb
+<%= button_to "Supprimer", @donor, method: :delete,
+      data: { turbo_confirm: "Confirmer la suppression de ce donateur ?" } %>
+```
+
+`turbo_confirm` affiche une boîte de dialogue native du navigateur ;
+la requête `DELETE` n'est envoyée que si l'utilisateur confirme.
 
 ## Exercices
 
-**2.3 — Factoriser le formulaire de `Donor` en partial**
+**2.6 — Factoriser le formulaire de `Donor` en partial**
 
 Dans `donor_crm`, extrayez le formulaire de `new.html.erb` dans un partial
 `_form.html.erb` réutilisé par `new.html.erb` et `edit.html.erb`. Ajoutez
 l'affichage du flash dans le layout et vérifiez qu'un message apparaît
 après création et après modification.
+
+**2.7 — Ajouter un champ supplémentaire au formulaire**
+
+Ajoutez un champ `phone` au formulaire (`f.telephone_field :phone`),
+autorisez-le dans `donor_params`, et vérifiez qu'il est bien enregistré.
+
+**2.8 — Afficher les erreurs de validation dans le formulaire**
+
+Ajoutez le bloc d'erreurs ci-dessus en tête de `_form.html.erb`.
+Soumettez le formulaire sans nom et vérifiez que le message d'erreur
+s'affiche bien au-dessus des champs.
+
+**2.9 — Ajouter un flash d'alerte distinct du `notice`**
+
+Trouvez un cas légitime dans votre CRM pour un `alert` plutôt qu'un
+`notice` (par exemple : tentative de suppression d'un donateur qui a des
+dons associés, refusée). Vérifiez que les deux messages s'affichent avec
+des styles visuellement différents.
+
+**2.10 — Confirmer une suppression avec `turbo_confirm`**
+
+Ajoutez `data: { turbo_confirm: "..." }` au bouton de suppression de la
+page `show`. Vérifiez qu'annuler la boîte de dialogue n'envoie aucune
+requête (onglet réseau des outils de développement).

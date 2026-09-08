@@ -7,6 +7,10 @@ exercises:
     title: "Tester l'action index de DonorsController"
   - key: "4.3"
     title: "Tester les deux chemins de l'action create"
+  - key: "4.4"
+    title: "Préparer des données de test avec une fixture"
+  - key: "4.5"
+    title: "Tester une méthode métier du modèle Campaign"
 ---
 
 # Tests de modèle et de contrôleur
@@ -105,6 +109,39 @@ end
 bougé (ou non) autour d'un bloc — bien plus fiable que de recompter les
 lignes d'une table à la main avant et après.
 
+## Préparer des données avec des fixtures
+
+Créer un donateur à la main au début de chaque test fonctionne, mais
+devient répétitif. Rails propose les **fixtures** : des données de test
+décrites une fois dans un fichier YAML, chargées automatiquement avant
+chaque test.
+
+```yaml
+# test/fixtures/donors.yml
+alice:
+  name: Alice
+  email: alice@example.org
+
+bob:
+  name: Bob
+  email: bob@example.org
+```
+
+```ruby
+test "index lists fixture donors" do
+  get donors_path
+
+  assert_select "body", /#{donors(:alice).name}/
+end
+```
+
+`donors(:alice)` retrouve l'enregistrement chargé depuis la fixture
+nommée `alice` — déjà présent en base avant même que le test ne
+commence, sans ligne de `create!` à écrire. Les fixtures conviennent
+bien aux données de référence stables ; `create!` en cours de test reste
+préférable dès qu'un test a besoin d'une donnée spécifique à son propre
+scénario.
+
 ## Exercices
 
 **4.1 — Écrire un test de validation pour `Donor`**
@@ -125,3 +162,15 @@ vérifiez que les deux noms apparaissent dans la réponse avec
 Écrivez les deux tests ci-dessus (succès et échec) pour l'action
 `create` de votre propre `DonorsController`. Lancez tout le fichier et
 vérifiez que les deux passent.
+
+**4.4 — Préparer des données de test avec une fixture**
+
+Créez `test/fixtures/donors.yml` avec deux donateurs nommés. Réécrivez le
+test de l'exercice 4.2 pour utiliser `donors(:alice)` et `donors(:bob)`
+plutôt que des `Donor.create!` explicites.
+
+**4.5 — Tester une méthode métier du modèle `Campaign`**
+
+Reprenez `total_collected_cents` (partie 1). Écrivez un test qui crée une
+campagne, lui associe plusieurs dons de montants différents, et vérifie
+que la méthode renvoie bien leur somme exacte.
