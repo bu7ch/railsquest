@@ -6,7 +6,7 @@ gem "rails", "~> 8.1.3", ">= 8.1.3.1"
 # activesupport 8.1.3.1's ActiveSupport::JSON.decode still passes,
 # which breaks cookie/session (de)serialization. See
 # active_support/json/decoding.rb `::JSON.parse(json, options)`.
-gem "json", "~> 2.21"
+gem "json", "~> 3.0"
 # The modern asset pipeline for Rails [https://github.com/rails/propshaft]
 gem "propshaft"
 # Use sqlite3 as the database for Active Record
