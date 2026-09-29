@@ -1,7 +1,7 @@
 source "https://rubygems.org"
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
-gem "rails", "~> 8.1.3", ">= 8.1.3.1"
+gem "rails", "~> 8.1.4"
 # Pin json: 3.0.0's parse() dropped the positional options arg that
 # activesupport 8.1.3.1's ActiveSupport::JSON.decode still passes,
 # which breaks cookie/session (de)serialization. See
